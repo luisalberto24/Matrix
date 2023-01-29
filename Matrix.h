@@ -244,7 +244,8 @@ using namespace std;
 					}
 				}
 			}
-
+			delete mxs;
+			
 			return matrix.Traspose();
 		}
 
