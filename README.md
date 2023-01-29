@@ -6,9 +6,9 @@ For Example:
 
 Matrix<int, 3, 3> iMatrix;
 
-Matrix<float, 6, 7> iMatrix;
+Matrix<float, 6, 7> fMatrix;
 
-Matrix<double, 5, 10> iMatrix;
+Matrix<double, 5, 10> dMatrix;
 
 # Supported operations are: 
 Matrix addition, substraction, multiplication, traspose, inverse and detrminant, among others.
