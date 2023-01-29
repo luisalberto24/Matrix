@@ -11,4 +11,4 @@ Matrix<float, 6, 7> iMatrix;
 Matrix<double, 5, 10> iMatrix;
 
 # Supported operations are: 
-Matrix addition, substraction, multiplication, reversing, inverse and detrminant, among others.
+Matrix addition, substraction, multiplication, traspose, inverse and detrminant, among others.
