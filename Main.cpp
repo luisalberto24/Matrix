@@ -1,4 +1,4 @@
-#include <iostream>
+#include "stdio.h"
 #include "Matrix.h"
 
 template<typename T, unsigned int N, unsigned int M>
@@ -32,7 +32,11 @@ int main()
     printf("\n\nMatrix Traspose:\n");
     PrintMatrix(mat4x4f.Traspose());
     printf("\n\nMatrix Inverse:\n");
-    PrintMatrix(mat4x4f.Inverse());
+    Mat4x4f mat4f = mat4x4f.Inverse();
+    Mat4x4f Mat4x4fIdent = Mat4x4f::Identity();
+    PrintMatrix(mat4f);
+    printf("\n\nMatrix Inverse * Matrix = Identity:\n");
+    PrintMatrix(mat4f * mat4x4f);
 
     printf("\n\nPress any key.\n");
     getchar();

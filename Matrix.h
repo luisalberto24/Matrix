@@ -95,15 +95,6 @@ using namespace std;
 			return result;
 		}
 
-		Matrix& Add(const Matrix& value)
-		{
-			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
-			this->data[ri][ci] += value.data[ri][ci];
-			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
-
-			return *this;
-		}
-
 		Matrix& operator +=(const Matrix& value)
 		{
 			this->Add(value);
@@ -171,6 +162,15 @@ using namespace std;
 		{
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M)
 				data[ri][ci] = value[ri][ci];
+			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
+
+			return *this;
+		}
+
+		Matrix& Add(const Matrix& value)
+		{
+			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
+			this->data[ri][ci] += value.data[ri][ci];
 			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
 
 			return *this;
