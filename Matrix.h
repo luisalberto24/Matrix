@@ -117,10 +117,85 @@ using namespace std;
 			return *this;
 		}
 
-		Matrix& operator /(const T value)
+		Matrix operator -(const T value)
+		{
+			Matrix result;
+
+			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
+			result(ri, ci) = this->data[ri][ci] - value;
+			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
+
+			return result;
+		}
+
+		Matrix& operator -=(const T value)
 		{
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
+			this->data[ri][ci] = this->data[ri][ci] - value;
+			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
+
+			return *this;
+		}
+
+		Matrix operator +(const T value)
+		{
+			Matrix result;
+
+			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
+			result(ri, ci) = this->data[ri][ci] + value;
+			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
+
+			return result;
+		}
+
+		Matrix& operator +=(const T value)
+		{
+			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
+			this->data[ri][ci] = this->data[ri][ci] + value;
+			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
+
+			return *this;
+		}
+
+		Matrix operator /(const T value)
+		{
+			_ASSERT(value != 0);
+
+			Matrix result;
+
+			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
+			result(ri, ci) = this->data[ri][ci] / value;
+			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
+
+			return result;
+		}
+
+		Matrix& operator /=(const T value)
+		{
+			_ASSERT(value != 0);
+
+			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
 			this->data[ri][ci] = this->data[ri][ci] / value;
+			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
+
+			return *this;
+		}
+
+		Matrix operator *(const T value)
+		{
+			Matrix result;
+
+			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
+			result(ri, ci) = this->data[ri][ci] * value;
+			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
+
+			return result;
+		}
+
+		Matrix& operator *=(const T value)
+		{
+			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
+			this->data[ri][ci] = this->data[ri][ci] * value;
 			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
 
 			return *this;
@@ -299,13 +374,38 @@ using namespace std;
 
 			return 0;
 		}
+		bool IsInvertible()
+		{
+			_ASSERT(N == M && N > 0);
+			return (this->Determinant() != 0);
+		}
 
 		void ToIdentity()
 		{
-			_ASSERT(N == M && N > 0);
+			_ASSERT(N == M && N > 1);
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
 			this->data[ri][ci] = (T)(ri != ci ? 0 : 1);
 			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
+		}
+
+		bool IsIdentity()
+		{
+			_ASSERT(N == M && N > 1);
+			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
+			if (ri == ci)
+			{
+				if (this->data[ri][ci] != 1)
+				{
+					return false;
+				}
+			}
+			else if (this->data[ri][ci] != 0)
+			{
+				return false;
+			}
+			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
+
+			return true;
 		}
 
 		void Clear()

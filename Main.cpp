@@ -34,9 +34,15 @@ int main()
     printf("\n\nMatrix Inverse:\n");
     Mat4x4f mat4f = mat4x4f.Inverse();
     Mat4x4f Mat4x4fIdent = Mat4x4f::Identity();
+
+    printf("%s", Mat4x4fIdent.IsIdentity() ? "Is an identity." : "Is not an identity.");
+
     PrintMatrix(mat4f);
     printf("\n\nMatrix Inverse * Matrix = Identity:\n");
-    PrintMatrix(mat4f * mat4x4f);
+    Mat4x4f mat4tf = mat4f * mat4x4f;
+
+    
+    PrintMatrix(mat4tf);
 
     printf("\n\nPress any key.\n");
     getchar();
