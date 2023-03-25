@@ -204,22 +204,26 @@ using namespace std;
 			return *this;
 		}
 
-		Matrix& operator ^=(const T value)
+		Matrix& operator ^(const T value)
 		{
-			*this ^ value;
-
+			*this ^= value;
 			return *this;
 		}
 
-		Matrix& operator ^(const T value)
+		Matrix& operator ^=(const T exponent)
 		{
+			T absExponent = abs(exponent);
+			bool exponentHasDecimalPlaces = ((absExponent - (int)absExponent) != 0);
+
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
-			if (this->data[ri][ci] < 0)
-			{
-				T absValue = abs(value);
-				_ASSERT((absValue - (int)absValue) == 0);
-			}
-			this->data[ri][ci] = pow(this->data[ri][ci], value);
+			
+			_ASSERT
+			(
+				this->data[ri][ci] >= 0 || 
+				(this->data[ri][ci] < 0 && !exponentHasDecimalPlaces)
+			);
+
+			this->data[ri][ci] = pow(this->data[ri][ci], exponent);
 			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
 
 			return *this;
