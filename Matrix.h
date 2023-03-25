@@ -204,9 +204,9 @@ using namespace std;
 			return *this;
 		}
 
-		Matrix& operator ^(const T value)
+		Matrix& operator ^(const T exponent)
 		{
-			*this ^= value;
+			*this ^= exponent;
 			return *this;
 		}
 
