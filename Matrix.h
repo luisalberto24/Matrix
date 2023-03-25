@@ -214,15 +214,12 @@ using namespace std;
 		{
 			T absExponent = abs(exponent);
 			bool exponentHasDecimalPlaces = ((absExponent - (int)absExponent) != 0);
-
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
-			
 			_ASSERT
 			(
 				this->data[ri][ci] >= 0 || 
 				(this->data[ri][ci] < 0 && !exponentHasDecimalPlaces)
 			);
-
 			this->data[ri][ci] = pow(this->data[ri][ci], exponent);
 			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
 
