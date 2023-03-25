@@ -43,7 +43,10 @@ using namespace std;
 	class Matrix
 	{
 	public:
-		struct Array { typedef T Type[N][M]; };
+		struct Array
+		{
+			typedef T Type[N][M];
+		};
 		typedef Matrix* MatrixPointer;
 	public:
 		typename Matrix::Array::Type data;
@@ -53,14 +56,14 @@ using namespace std;
 			*this = { {} };
 		}
 
-		Matrix(Matrix& value) noexcept
+		Matrix(Matrix& matrix) noexcept
 		{
-			*this = value;
+			*this = matrix;
 		}
 
-		Matrix(Matrix&& value) noexcept
+		Matrix(Matrix&& matrix) noexcept
 		{
-			*this = value;
+			*this = matrix;
 		}
 
 		Matrix(typename Matrix::Array::Type&& value)
@@ -88,30 +91,30 @@ using namespace std;
 			return this->Data(row, column);
 		}
 
-		Matrix operator +(const Matrix& value)
+		Matrix operator +(const Matrix& matrix)
 		{
 			Matrix result(*this);
-			result += value;
+			result += matrix;
 			return result;
 		}
 
-		Matrix& operator +=(const Matrix& value)
+		Matrix& operator +=(const Matrix& matrix)
 		{
-			this->Add(value);
+			this->Add(matrix);
 			return *this;
 		}
 
-		Matrix operator -(const Matrix& value)
+		Matrix operator -(const Matrix& matrix)
 		{
 			Matrix result(*this);
-			result -= value;
+			result -= matrix;
 			return result;
 		}
 
-		Matrix& operator -=(const Matrix& value)
+		Matrix& operator -=(const Matrix& matrix)
 		{
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
-			this->data[ri][ci] -= value.data[ri][ci];
+			this->data[ri][ci] -= matrix.data[ri][ci];
 			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
 
 			return *this;
@@ -201,24 +204,37 @@ using namespace std;
 			return *this;
 		}
 
+		Matrix& operator ^(const T value)
+		{
+			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
+			if (this->data[ri][ci] < 0)
+			{
+				_ASSERT((value - (int)value) == 0);
+			}
+			this->data[ri][ci] = pow(this->data[ri][ci], value);
+			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
+
+			return *this;
+		}
+
 		template<unsigned int P>
-		Matrix<T, N, P> operator *(Matrix<T, M, P>& value)
+		Matrix<T, N, P> operator *(Matrix<T, M, P>& matrix)
 		{
 			Matrix<T, N, P> result({});
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, P);
 			for (unsigned int x = 0; x < M; x++)
 			{
-				result(ri, ci) += this->data[ri][x] * value(x, ci);
+				result(ri, ci) += this->data[ri][x] * matrix(x, ci);
 			}
 			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
 
 			return result;
 		}
 
-		Matrix& operator =(Matrix& value)
+		Matrix& operator =(Matrix& matrix)
 		{
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M)
-				this->data[ri][ci] = value(ri, ci);
+				this->data[ri][ci] = matrix(ri, ci);
 			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
 
 			return *this;
@@ -242,10 +258,34 @@ using namespace std;
 			return *this;
 		}
 
-		Matrix& Add(const Matrix& value)
+		Matrix<T, 1, M> GetRow(int row)
+		{
+			_ASSERT(row >= 0 && row < N);
+			Matrix<T, 1, M> result;
+			for (unsigned int m = 0; m < M; m++)
+			{
+				result.data[0][m] = data[row][m];
+			}
+
+			return result;
+		}
+
+		Matrix<T, N, 1> GetColumn(int column)
+		{
+			_ASSERT(column >= 0 && column < M);
+			Matrix<T, N, 1> result;
+			for (unsigned int n = 0; n < N; n++)
+			{
+				result.data[n][0] = (T)data[n][column];
+			}
+
+			return result;
+		}
+		
+		Matrix& Add(const Matrix& matrix)
 		{
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
-			this->data[ri][ci] += value.data[ri][ci];
+			this->data[ri][ci] += matrix.data[ri][ci];
 			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
 
 			return *this;

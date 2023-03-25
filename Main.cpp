@@ -18,10 +18,27 @@ void PrintMatrix(Matrix<T, N, M> matrix)
 
 int main()
 {
-    Matrix<float, 2, 2> matrix( { { 2.0f, 3.0f }, { -1.0f, 5.0f } });
+    Matrix<double, 2, 2> matrix( { { 2.0f, 3.0f }, { -1.0f, 5.0f } });
+    matrix = matrix ^ 3;
+    PrintMatrix(matrix);
+    printf("\n\nExtracting GetColumn:");
+    Mat2x1d mxt = matrix.GetColumn(0);
+    PrintMatrix(mxt);
+
+    printf("\n\nExtracting GetRow:");
+    Mat1x2d mxt2 = matrix.GetRow(0);
+    PrintMatrix(mxt2.Traspose());
+    
     printf("\n\nFloat Matrix (2x2):");
     PrintMatrix(matrix);
-    printf("\n\tDeterminant: %.2f", matrix.Determinant());
+    if (matrix.IsInvertible())
+    {
+        printf("\n\tDeterminant: %.2f", matrix.Determinant());
+    }
+    else
+    {
+        printf("Matrix is not invertible\n");
+    }
 
     Mat4x4f mat4x4f({ {3,5,8,54}, {32, 92,-34,33}, {8,4,3,2}, {-24,-98,-43,-3} });
     printf("\n\nFloat Matrix (4x4):");
