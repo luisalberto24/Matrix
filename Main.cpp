@@ -19,7 +19,7 @@ void PrintMatrix(Matrix<T, N, M> matrix)
 int main()
 {
     Matrix<double, 2, 2> matrix( { { 2.0f, 3.0f }, { -1.0f, 5.0f } });
-    matrix = matrix ^ 3;
+    matrix ^= 8;
     PrintMatrix(matrix);
     printf("\n\nExtracting GetColumn:");
     Mat2x1d mxt = matrix.GetColumn(0);

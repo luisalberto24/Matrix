@@ -204,12 +204,20 @@ using namespace std;
 			return *this;
 		}
 
+		Matrix& operator ^=(const T value)
+		{
+			*this ^ value;
+
+			return *this;
+		}
+
 		Matrix& operator ^(const T value)
 		{
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
 			if (this->data[ri][ci] < 0)
 			{
-				_ASSERT((value - (int)value) == 0);
+				T absValue = abs(value);
+				_ASSERT((absValue - (int)absValue) == 0);
 			}
 			this->data[ri][ci] = pow(this->data[ri][ci], value);
 			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
@@ -276,7 +284,7 @@ using namespace std;
 			Matrix<T, N, 1> result;
 			for (unsigned int n = 0; n < N; n++)
 			{
-				result.data[n][0] = (T)data[n][column];
+				result.data[n][0] = data[n][column];
 			}
 
 			return result;
