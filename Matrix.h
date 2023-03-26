@@ -88,7 +88,8 @@ using namespace std;
 	public:
 		T& operator()(unsigned int row, unsigned int column)
 		{
-			return this->Data(row, column);
+			_ASSERT(row < N&& column < M && N > 0 && M > 0 && (N > 1 || M > 1));
+			return data[row][column];
 		}
 
 		Matrix operator +(const Matrix& matrix)
@@ -204,12 +205,6 @@ using namespace std;
 			return *this;
 		}
 
-		Matrix& operator ^(const T exponent)
-		{
-			*this ^= exponent;
-			return *this;
-		}
-
 		Matrix& operator ^=(const T exponent)
 		{
 			T absExponent = abs(exponent);
@@ -233,7 +228,7 @@ using namespace std;
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, P);
 			for (unsigned int x = 0; x < M; x++)
 			{
-				result(ri, ci) += this->data[ri][x] * matrix(x, ci);
+				result.data[ri][ci] += this->data[ri][x] * matrix.data[x][ci];
 			}
 			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
 
@@ -243,7 +238,7 @@ using namespace std;
 		Matrix& operator =(Matrix& matrix)
 		{
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M)
-				this->data[ri][ci] = matrix(ri, ci);
+				this->data[ri][ci] = matrix.data[ri][ci];
 			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
 
 			return *this;
@@ -305,16 +300,10 @@ using namespace std;
 			Matrix<T, M, N> result({});
 
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M)
-				result(ci, ri) = this->data[ri][ci];
+				result.data[ci][ri] = this->data[ri][ci];
 			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
 
 			return result;
-		}
-
-		T& Data(unsigned int row, unsigned int column)
-		{
-			_ASSERT((row < N&& row >= 0) && (column < M&& column >= 0));
-			return data[row][column];
 		}
 
 		Matrix Inverse()
@@ -350,7 +339,7 @@ using namespace std;
 							{
 								if (m != fj)
 								{
-									mxs->Data(k, p) = data[n][m];
+									mxs->data[k][p] = data[n][m];
 									p++;
 								}
 								m++;
@@ -364,7 +353,7 @@ using namespace std;
 					if (det != 0)
 					{
 						sign = ((fi + fj) & 1) == 0 ? 1 : -1;
-						matrix.Data(fi, fj) = sign * det;
+						matrix.data[fi][fj] = sign * det;
 					}
 				}
 			}
@@ -396,7 +385,7 @@ using namespace std;
 							{
 								if (j != m)
 								{
-									mxs->Data(k, p) = data[n][m];
+									(*mxs)(k, p) = (*this)(n, m);
 									p++;
 								}
 								m++;
@@ -480,7 +469,7 @@ using namespace std;
 			Matrix result({});
 			for (unsigned int ri = 0; ri < N; ri++)
 			{
-				result(ri, ri) = 1;
+				result.data[ri][ri] = 1;
 			}
 
 			return result;
@@ -490,27 +479,28 @@ using namespace std;
 	template<typename T>
 	class Matrix<T, 0, 0>
 	{
-	private:
-		T data = 0;
-	public:
-		T& Data(unsigned int row, unsigned int column)
-		{
-			return data;
-		}
-		unsigned int Count() { return 0; }
-		T Determinant()
-		{
-			return 0;
-		}
-		unsigned int NSize()
-		{
-			return 0;
-		}
+		protected:
+			T data = 0;
+		public:
+			
+			T& operator()(unsigned int row, unsigned int column)
+			{
+				return data;
+			}
 
-		unsigned int MSize()
-		{
-			return 0;
-		}
+			T Determinant()
+			{
+				return 0;
+			}
+			unsigned int NSize()
+			{
+				return 0;
+			}
+
+			unsigned int MSize()
+			{
+				return 0;
+			}
 	};
 
 	typedef Matrix<float, 1, 2> Mat1x2f;
