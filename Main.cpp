@@ -5,10 +5,10 @@ template<typename T, unsigned int N, unsigned int M>
 void PrintMatrix(Matrix<T, N, M> matrix)
 {
     printf("\n\n");    
-    for (unsigned int n = 0; n < matrix.NSize(); n++)
+    for (unsigned int n = 0; n < N; n++)
     {
         printf("\t|\t");
-        for (unsigned int m = 0; m < matrix.MSize(); m++)
+        for (unsigned int m = 0; m < M; m++)
         {
             printf("%.8f\t", matrix(n, m));
         }
