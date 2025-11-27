@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <fstream>
 #include <stdlib.h>
 
@@ -474,6 +475,9 @@ using namespace std;
 
 			return result;
 		}
+
+		template<typename U, unsigned int P, unsigned int Q>
+		friend void PrintMatrix(Matrix<U, P, Q> matrix);
 	};
 
 	template<typename T>
@@ -501,7 +505,25 @@ using namespace std;
 			{
 				return 0;
 			}
+
+			template<typename U, unsigned int P, unsigned int Q>
+			friend void PrintMatrix(Matrix<U, P, Q> matrix);
 	};
+
+	template<typename U, unsigned int P, unsigned int Q>
+	void PrintMatrix(Matrix<U, P, Q> matrix)
+	{
+		printf("\n\n");
+		for (unsigned int n = 0; n < P; n++)
+		{
+			printf("\t|\t");
+			for (unsigned int m = 0; m < Q; m++)
+			{
+				printf("%.8f\t", matrix(n, m));
+			}
+			printf("\t|\n");
+		}
+	}
 
 	typedef Matrix<float, 1, 2> Mat1x2f;
 	typedef Matrix<float, 1, 3> Mat1x3f;

@@ -1,23 +1,16 @@
 #include "stdio.h"
 #include "Matrix.h"
-
-template<typename T, unsigned int N, unsigned int M>
-void PrintMatrix(Matrix<T, N, M> matrix)
-{
-    printf("\n\n");    
-    for (unsigned int n = 0; n < N; n++)
-    {
-        printf("\t|\t");
-        for (unsigned int m = 0; m < M; m++)
-        {
-            printf("%.8f\t", matrix(n, m));
-        }
-        printf("\t|\n");
-    }
-}
+#include "TypeFactory.h"
 
 int main()
 {
+    printf("\n==================================================================================================\n");
+    printf("\nCreate matrix with TypeFactory and Unique PTR:\n");
+	Mat4x4d::Array::Type array = { {3,5,8,54}, {32, 92,-34,33}, {800.23,4,3,2}, {-24,-98,-43,-3} };
+    std::unique_ptr<Mat4x4d> mat4_4d = TypeFactory::Create<Mat4x4d>(array);
+	PrintMatrix(*mat4_4d);
+    printf("\n==================================================================================================\n");
+
     Matrix<double, 2, 2> matrix( { { 2.0f, 3.0f }, { -1.0f, 5.0f } });
     matrix ^= 8;
     PrintMatrix(matrix);
