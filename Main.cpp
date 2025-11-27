@@ -4,11 +4,22 @@
 
 int main()
 {
+    Mat4x4d::Array::Type array = { {3,5,8,54}, {32, 92,-34,33}, {800.23,4,3,2}, {-24,-98,-43,-3} };
     printf("\n==================================================================================================\n");
-    printf("\nCreate matrix with TypeFactory and Unique PTR:\n");
-	Mat4x4d::Array::Type array = { {3,5,8,54}, {32, 92,-34,33}, {800.23,4,3,2}, {-24,-98,-43,-3} };
-    std::unique_ptr<Mat4x4d> mat4_4d = TypeFactory::Create<Mat4x4d>(array);
-	PrintMatrix(*mat4_4d);
+    printf("\nCreate unique ptr matrix with TypeFactory:\n");
+    std::unique_ptr<Mat4x4d> mat4_4d_u = TypeFactory::Create_Unique_Ptr<Mat4x4d>(array);
+	PrintMatrix(*mat4_4d_u);
+    printf("\n==================================================================================================\n");
+
+    printf("\nCreate unique shared matrix with TypeFactory:\n");
+    std::shared_ptr<Mat4x4d> mat4_4d_s = TypeFactory::Create_Shared_Ptr<Mat4x4d>(array);
+    PrintMatrix(*mat4_4d_s);
+    printf("\n==================================================================================================\n");
+
+    printf("\nCreate direct pointer for matrix with TypeFactory:\n");
+    Mat4x4d* mat4_4d = TypeFactory::Create<Mat4x4d>(array);
+    PrintMatrix(*mat4_4d);
+    delete mat4_4d;
     printf("\n==================================================================================================\n");
 
     Matrix<double, 2, 2> matrix( { { 2.0f, 3.0f }, { -1.0f, 5.0f } });
