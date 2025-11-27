@@ -1,9 +1,9 @@
+#pragma once
+
 #include <stdio.h>
 #include <string.h>
 #include <fstream>
 #include <stdlib.h>
-
-#pragma once
 
 using namespace std;
 
