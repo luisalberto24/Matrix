@@ -2,8 +2,14 @@
 #include "Matrix.h"
 #include "TypeFactory.h"
 
+
 int main()
 {
+	std::unique_ptr<Mat2x2i> mat2_2i_u =  std::make_unique<Mat2x2i>(Mat2x2i::Array::Type{ {2,3}, {4,5} });
+    PrintMatrix(*mat2_2i_u.get());
+    printf("\nEnd\n");
+
+    printf("\nxxxx==================================================================================================xxx\n");
     Mat4x4d::Array::Type array = { {3,5,8,54}, {32, 92,-34,33}, {800.23,4,3,2}, {-24,-98,-43,-3} };
     printf("\n==================================================================================================\n");
     printf("\nCreate unique ptr matrix with TypeFactory:\n");

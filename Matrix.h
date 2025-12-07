@@ -4,6 +4,9 @@
 #include <string.h>
 #include <fstream>
 #include <stdlib.h>
+#include <algorithm> // Required for std::transform
+#include <cctype>    // Required for ::tolower
+#include <type_traits>
 
 using namespace std;
 
@@ -517,9 +520,10 @@ using namespace std;
 		for (unsigned int n = 0; n < P; n++)
 		{
 			printf("\t|\t");
+			constexpr const char* format = !std::is_same_v<U, int> ? "%.8f\t" : "%d\t";
 			for (unsigned int m = 0; m < Q; m++)
 			{
-				printf("%.8f\t", matrix(n, m));
+				printf(format, matrix(n, m));
 			}
 			printf("\t|\n");
 		}
