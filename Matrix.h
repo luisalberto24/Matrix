@@ -93,7 +93,7 @@ using namespace std;
 			return data[row][column];
 		}
 
-		Matrix operator +(const Matrix& matrix)
+		Matrix operator +(const Matrix& matrix) const
 		{
 			Matrix result(*this);
 			result += matrix;
@@ -223,7 +223,7 @@ using namespace std;
 		}
 
 		template<unsigned int P>
-		Matrix<T, N, P> operator *(Matrix<T, M, P>& matrix)
+		Matrix<T, N, P> operator *(const Matrix<T, M, P>& matrix) const 
 		{
 			Matrix<T, N, P> result({});
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, P);
@@ -245,7 +245,7 @@ using namespace std;
 			return *this;
 		}
 
-		Matrix& operator =(Matrix::ArrayType& value)
+		Matrix& operator =(const Matrix::ArrayType& value)
 		{
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M)
 				data[ri][ci] = value[ri][ci];
@@ -254,7 +254,7 @@ using namespace std;
 			return *this;
 		}
 
-		Matrix& operator =(Matrix::ArrayType&& value)
+		Matrix& operator =(const Matrix::ArrayType&& value)
 		{
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M)
 				data[ri][ci] = value[ri][ci];
