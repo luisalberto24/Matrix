@@ -52,15 +52,16 @@ using namespace std;
 			typedef T Type[N][M];
 		};
 		typedef Matrix* MatrixPointer;
+		using ArrayType = T[N][M];
 	public:
-		typename Matrix::Array::Type data;
+		Matrix::ArrayType data;
 	public:
 		Matrix()
 		{
 			*this = { {} };
 		}
 
-		Matrix(Matrix& matrix) noexcept
+		Matrix(const Matrix& matrix) noexcept
 		{
 			*this = matrix;
 		}
@@ -70,12 +71,12 @@ using namespace std;
 			*this = matrix;
 		}
 
-		Matrix(typename Matrix::Array::Type&& value)
+		Matrix(Matrix::ArrayType&& value) noexcept
 		{
 			*this = value;
 		}
 
-		Matrix(typename Matrix::Array::Type& value)
+		Matrix(Matrix::ArrayType& value) noexcept
 		{
 			*this = value;
 		}
@@ -239,7 +240,7 @@ using namespace std;
 			return result;
 		}
 
-		Matrix& operator =(Matrix& matrix)
+		Matrix& operator =(const Matrix& matrix)
 		{
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M)
 				this->data[ri][ci] = matrix.data[ri][ci];
@@ -248,7 +249,7 @@ using namespace std;
 			return *this;
 		}
 
-		Matrix& operator =(typename Matrix::Array::Type& value)
+		Matrix& operator =(Matrix::ArrayType& value)
 		{
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M)
 				data[ri][ci] = value[ri][ci];
@@ -257,7 +258,7 @@ using namespace std;
 			return *this;
 		}
 
-		Matrix& operator =(typename Matrix::Array::Type&& value)
+		Matrix& operator =(Matrix::ArrayType&& value)
 		{
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M)
 				data[ri][ci] = value[ri][ci];

@@ -1,20 +1,23 @@
 #include "stdio.h"
 #include "Matrix.h"
 #include "TypeFactory.h"
-
+#include <direct.h>
+#include <limits.h>
+#include <string.h>
 
 int main()
 {
-	std::unique_ptr<Mat2x2i> mat2_2i_u =  std::make_unique<Mat2x2i>(Mat2x2i::Array::Type{ {2,3}, {4,5} });
+    printf("\nStart\n");
+    std::unique_ptr<Mat2x2i> mat2_2i_u = std::make_unique<Mat2x2i>(Mat2x2i::ArrayType{ {2,3}, {4,5} });
     PrintMatrix(*mat2_2i_u.get());
     printf("\nEnd\n");
 
     printf("\nxxxx==================================================================================================xxx\n");
-    Mat4x4d::Array::Type array = { {3,5,8,54}, {32, 92,-34,33}, {800.23,4,3,2}, {-24,-98,-43,-3} };
+    Mat4x4d::ArrayType array = { {3,5,8,54}, {32, 92,-34,33}, {800.23,4,3,2}, {-24,-98,-43,-3} };
     printf("\n==================================================================================================\n");
     printf("\nCreate unique ptr matrix with TypeFactory:\n");
     std::unique_ptr<Mat4x4d> mat4_4d_u = TypeFactory::Create_Unique_Ptr<Mat4x4d>(array);
-	PrintMatrix(*mat4_4d_u);
+    PrintMatrix(*mat4_4d_u);
     printf("\n==================================================================================================\n");
 
     printf("\nCreate unique shared matrix with TypeFactory:\n");
@@ -28,7 +31,7 @@ int main()
     delete mat4_4d;
     printf("\n==================================================================================================\n");
 
-    Matrix<double, 2, 2> matrix( { { 2.0f, 3.0f }, { -1.0f, 5.0f } });
+    Matrix<double, 2, 2> matrix({ { 2.0f, 3.0f }, { -1.0f, 5.0f } });
     matrix ^= 8;
     PrintMatrix(matrix);
     printf("\n\nExtracting GetColumn:");
@@ -38,7 +41,7 @@ int main()
     printf("\n\nExtracting GetRow:");
     Mat1x2d mxt2 = matrix.GetRow(0);
     PrintMatrix(mxt2.Traspose());
-    
+
     printf("\n\nFloat Matrix (2x2):");
     PrintMatrix(matrix);
     if (matrix.IsInvertible())
@@ -68,7 +71,7 @@ int main()
     printf("\n\nMatrix Inverse * Matrix = Identity:\n");
     Mat4x4f mat4tf = mat4f * mat4x4f;
 
-    
+
     PrintMatrix(mat4tf);
 
     printf("\n\nPress any key.\n");
