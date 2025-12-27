@@ -47,10 +47,6 @@ using namespace std;
 	class Matrix
 	{
 	public:
-		struct Array
-		{
-			typedef T Type[N][M];
-		};
 		typedef Matrix* MatrixPointer;
 		using ArrayType = T[N][M];
 	public:
