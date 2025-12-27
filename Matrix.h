@@ -49,7 +49,7 @@ using namespace std;
 	public:
 		typedef Matrix* MatrixPointer;
 		using ArrayType = T[N][M];
-	public:
+	protected:
 		Matrix::ArrayType data;
 	public:
 		Matrix()
@@ -263,13 +263,23 @@ using namespace std;
 			return *this;
 		}
 
+		const Matrix::ArrayType& Data() const 
+		{
+			return data;
+		}
+
+		Matrix::ArrayType& Data()
+		{
+			return data;
+		}
+
 		Matrix<T, 1, M> GetRow(int row)
 		{
 			_ASSERT(row >= 0 && row < N);
 			Matrix<T, 1, M> result;
 			for (unsigned int m = 0; m < M; m++)
 			{
-				result.data[0][m] = data[row][m];
+				result.Data()[0][m] = data[row][m];
 			}
 
 			return result;
@@ -281,7 +291,7 @@ using namespace std;
 			Matrix<T, N, 1> result;
 			for (unsigned int n = 0; n < N; n++)
 			{
-				result.data[n][0] = data[n][column];
+				result.Data()[n][0] = data[n][column];
 			}
 
 			return result;
@@ -290,7 +300,7 @@ using namespace std;
 		Matrix& Add(const Matrix& matrix)
 		{
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M);
-			this->data[ri][ci] += matrix.data[ri][ci];
+			this->data[ri][ci] += matrix.Data()[ri][ci];
 			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
 
 			return *this;
@@ -301,7 +311,7 @@ using namespace std;
 			Matrix<T, M, N> result({});
 
 			BEGIN_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI(N, M)
-				result.data[ci][ri] = this->data[ri][ci];
+				result.Data()[ci][ri] = this->data[ri][ci];
 			END_FOR_MATRIX_LOOP_ROW_RI_COLUMN_CI;
 
 			return result;
@@ -340,7 +350,7 @@ using namespace std;
 							{
 								if (m != fj)
 								{
-									mxs->data[k][p] = data[n][m];
+									mxs->Data()[k][p] = data[n][m];
 									p++;
 								}
 								m++;
@@ -354,7 +364,7 @@ using namespace std;
 					if (det != 0)
 					{
 						sign = ((fi + fj) & 1) == 0 ? 1 : -1;
-						matrix.data[fi][fj] = sign * det;
+						matrix.Data()[fi][fj] = sign * det;
 					}
 				}
 			}

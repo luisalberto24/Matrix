@@ -10,6 +10,7 @@ int main()
     printf("\nStart\n");
     std::unique_ptr<Mat2x2i> mat2_2i_u = std::make_unique<Mat2x2i>(Mat2x2i::ArrayType{ {2,3}, {4,5} });
     PrintMatrix(*mat2_2i_u.get());
+    printf("Item: %d\n", mat2_2i_u->Data()[0][1]);
     printf("\nEnd\n");
 
     printf("\nxxxx==================================================================================================xxx\n");
