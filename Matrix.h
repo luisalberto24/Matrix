@@ -160,10 +160,10 @@
 		{
 			T absExponent = abs(exponent);
 			assert((absExponent - (int)absExponent) == 0);
-			Matrix_For_Loop_Row_Colum(N, M, [this, exponent](unsigned int ri, unsigned int ci) 
+			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, exponent](unsigned int ri, unsigned int ci) 
 				{ 
-					assert(data[ri][ci] >= 0 ||(data[ri][ci] < 0));
-					data[ri][ci] = pow(data[ri][ci], exponent); 
+					assert(_data[ri][ci] >= 0 || _data[ri][ci] < 0);
+					_data[ri][ci] = pow(_data[ri][ci], exponent);
 				}
 			);
 
@@ -174,10 +174,10 @@
 		Matrix<T, N, P> operator *(const Matrix<T, M, P>& matrix) const 
 		{
 			Matrix<T, N, P> result{};
-			Matrix_For_Loop_Row_Colum(N, M, [this, &result, &matrix](unsigned int ri, unsigned int ci) {
+			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, &result, &matrix](unsigned int ri, unsigned int ci) {
 				for (unsigned int x = 0; x < M; x++)
 				{
-					result.data[ri][ci] += data[ri][x] * matrix.data[x][ci];
+					result.data[ri][ci] += _data[ri][x] * matrix.data[x][ci];
 				}
 			});
 
