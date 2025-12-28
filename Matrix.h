@@ -368,27 +368,28 @@
 		bool IsIdentity() const
 		{
 			assert(N == M && N > 1);
-			unsigned char identityFlag = 1;
-			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &identityFlag](unsigned int ri, unsigned int ci)
-				{ 
+
+			for (unsigned int ri = 0; ri < N; ri++)
+			{
+				for (unsigned int ci = 0; ci < M; ci++)
+				{
 					if (ri == ci)
 					{
-						if (_data[ri][ci] != 1)
+						if (data[ri][ci] != 1)
 						{
-							identityFlag = 0;
-							return;
+							return false;
 						}
 					}
-					else if (_data[ri][ci] != 0)
+					else if (data[ri][ci] != 0)
 					{
-						identityFlag = 0;
-						return;
+						return false;
 					}
-				});
+				}
+			}
 
-			return (identityFlag == 1);
+			return true;
 		}
-
+	
 		void Clear()
 		{
 			Matrix_For_Loop_Row_Column(N, M, [&_data = data](unsigned int ri, unsigned int ci) { _data[ri][ci] = 0; });
