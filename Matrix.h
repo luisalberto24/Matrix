@@ -13,7 +13,7 @@
 
 	template<typename Row, typename Column, typename Function>
 	requires std::invocable<Function, unsigned int, unsigned int>
-	void Matrix_For_Loop_Row_Colum(Row N, Column M, Function functionCall)
+	void Matrix_For_Loop_Row_Column(Row N, Column M, Function functionCall)
 	{
 		for (unsigned int ri = 0; ri < N; ri++)
 		{
@@ -96,33 +96,33 @@
 
 		Matrix& operator -=(const Matrix& matrix)
 		{
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, &matrix](unsigned int ri, unsigned int ci) { _data[ri][ci] -= matrix.data[ri][ci]; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &matrix](unsigned int ri, unsigned int ci) { _data[ri][ci] -= matrix.data[ri][ci]; });
 			return *this;
 		}
 
 		Matrix operator -(const T value) const
 		{
 			Matrix result{};
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, &result, value](unsigned int ri, unsigned int ci) { result(ri, ci) = _data[ri][ci] - value; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &result, value](unsigned int ri, unsigned int ci) { result(ri, ci) = _data[ri][ci] - value; });
 			return result;
 		}
 
 		Matrix& operator -=(const T value)
 		{
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, value](unsigned int ri, unsigned int ci) { _data[ri][ci] = _data[ri][ci] - value; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, value](unsigned int ri, unsigned int ci) { _data[ri][ci] = _data[ri][ci] - value; });
 			return *this;
 		}
 
 		Matrix operator +(const T value) const
 		{
 			Matrix result{};
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, &result, value](unsigned int ri, unsigned int ci) { result(ri, ci) = _data[ri][ci] + value; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &result, value](unsigned int ri, unsigned int ci) { result(ri, ci) = _data[ri][ci] + value; });
 			return result;
 		}
 
 		Matrix& operator +=(const T value)
 		{
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, value](unsigned int ri, unsigned int ci) { _data[ri][ci] = _data[ri][ci] + value; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, value](unsigned int ri, unsigned int ci) { _data[ri][ci] = _data[ri][ci] + value; });
 			return *this;
 		}
 
@@ -131,7 +131,7 @@
 			assert(value != 0);
 
 			Matrix result{};
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, &result, value](unsigned int ri, unsigned int ci) { result(ri, ci) = _data[ri][ci] / value; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &result, value](unsigned int ri, unsigned int ci) { result(ri, ci) = _data[ri][ci] / value; });
 			return result;
 		}
 
@@ -139,20 +139,20 @@
 		{
 			assert(value != 0);
 
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, value](unsigned int ri, unsigned int ci) { _data[ri][ci] = _data[ri][ci] / value; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, value](unsigned int ri, unsigned int ci) { _data[ri][ci] = _data[ri][ci] / value; });
 			return *this;
 		}
 
 		Matrix operator *(const T value) const
 		{
 			Matrix result{};
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, &result, value](unsigned int ri, unsigned int ci) { result(ri, ci) = _data[ri][ci] * value; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &result, value](unsigned int ri, unsigned int ci) { result(ri, ci) = _data[ri][ci] * value; });
 			return result;
 		}
 
 		Matrix& operator *=(const T value)
 		{
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, value](unsigned int ri, unsigned int ci) { _data[ri][ci] = _data[ri][ci] * value; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, value](unsigned int ri, unsigned int ci) { _data[ri][ci] = _data[ri][ci] * value; });
 			return *this;
 		}
 
@@ -160,7 +160,7 @@
 		{
 			T absExponent = abs(exponent);
 			assert((absExponent - (int)absExponent) == 0);
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, exponent](unsigned int ri, unsigned int ci) 
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, exponent](unsigned int ri, unsigned int ci) 
 				{ 
 					assert(_data[ri][ci] >= 0 || _data[ri][ci] < 0);
 					_data[ri][ci] = pow(_data[ri][ci], exponent);
@@ -174,7 +174,7 @@
 		Matrix<T, N, P> operator *(const Matrix<T, M, P>& matrix) const 
 		{
 			Matrix<T, N, P> result{};
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, &result, &matrix](unsigned int ri, unsigned int ci) {
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &result, &matrix](unsigned int ri, unsigned int ci) {
 				for (unsigned int x = 0; x < M; x++)
 				{
 					result.data[ri][ci] += _data[ri][x] * matrix.data[x][ci];
@@ -186,19 +186,19 @@
 
 		Matrix& operator =(const Matrix& matrix)
 		{
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, &matrix](unsigned int ri, unsigned int ci) { _data[ri][ci] = matrix.data[ri][ci]; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &matrix](unsigned int ri, unsigned int ci) { _data[ri][ci] = matrix.data[ri][ci]; });
 			return *this;
 		}
 
 		Matrix& operator =(const Matrix::ArrayType& value)
 		{
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, &value](unsigned int ri, unsigned int ci) { _data[ri][ci] = value[ri][ci]; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &value](unsigned int ri, unsigned int ci) { _data[ri][ci] = value[ri][ci]; });
 			return *this;
 		}
 
 		Matrix& operator =(const Matrix::ArrayType&& value)
 		{
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, &value](unsigned int ri, unsigned int ci) { _data[ri][ci] = value[ri][ci]; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &value](unsigned int ri, unsigned int ci) { _data[ri][ci] = value[ri][ci]; });
 			return *this;
 		}
 
@@ -238,14 +238,14 @@
 		
 		Matrix& Add(const Matrix& matrix)
 		{
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, &matrix](unsigned int ri, unsigned int ci) { _data[ri][ci] += matrix.data[ri][ci]; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &matrix](unsigned int ri, unsigned int ci) { _data[ri][ci] += matrix.data[ri][ci]; });
 			return *this;
 		}
 
 		Matrix<T, M, N> Traspose() const 
 		{
 			Matrix<T, M, N> result{};
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, &result](unsigned int ri, unsigned int ci) { result(ci, ri) = _data[ri][ci]; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &result](unsigned int ri, unsigned int ci) { result(ci, ri) = _data[ri][ci]; });
 			return result;
 		}
 
@@ -362,14 +362,14 @@
 		void ToIdentity()
 		{
 			assert(N == M && N > 1);
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data](unsigned int ri, unsigned int ci) { _data[ri][ci] = (T)(ri != ci ? 0 : 1); });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data](unsigned int ri, unsigned int ci) { _data[ri][ci] = (T)(ri != ci ? 0 : 1); });
 		}
 
 		bool IsIdentity() const
 		{
 			assert(N == M && N > 1);
 			unsigned char identityFlag = 1;
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data, &identityFlag](unsigned int ri, unsigned int ci)
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &identityFlag](unsigned int ri, unsigned int ci)
 				{ 
 					if (ri == ci)
 					{
@@ -391,7 +391,7 @@
 
 		void Clear()
 		{
-			Matrix_For_Loop_Row_Colum(N, M, [&_data = data](unsigned int ri, unsigned int ci) { _data[ri][ci] = 0; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data](unsigned int ri, unsigned int ci) { _data[ri][ci] = 0; });
 		}
 
 		unsigned int NSize()
