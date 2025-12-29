@@ -103,13 +103,13 @@
 		Matrix operator -(const T value) const
 		{
 			Matrix result{};
-			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &result, value](unsigned int ri, unsigned int ci) { result(ri, ci) = _data[ri][ci] - value; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &result, &value](unsigned int ri, unsigned int ci) { result(ri, ci) = _data[ri][ci] - value; });
 			return result;
 		}
 
 		Matrix& operator -=(const T value)
 		{
-			Matrix_For_Loop_Row_Column(N, M, [&_data = data, value](unsigned int ri, unsigned int ci) { _data[ri][ci] = _data[ri][ci] - value; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &value](unsigned int ri, unsigned int ci) { _data[ri][ci] = _data[ri][ci] - value; });
 			return *this;
 		}
 
@@ -122,7 +122,7 @@
 
 		Matrix& operator +=(const T value)
 		{
-			Matrix_For_Loop_Row_Column(N, M, [&_data = data, value](unsigned int ri, unsigned int ci) { _data[ri][ci] = _data[ri][ci] + value; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &value](unsigned int ri, unsigned int ci) { _data[ri][ci] = _data[ri][ci] + value; });
 			return *this;
 		}
 
@@ -131,7 +131,7 @@
 			assert(value != 0);
 
 			Matrix result{};
-			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &result, value](unsigned int ri, unsigned int ci) { result(ri, ci) = _data[ri][ci] / value; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &result, &value](unsigned int ri, unsigned int ci) { result(ri, ci) = _data[ri][ci] / value; });
 			return result;
 		}
 
@@ -139,30 +139,30 @@
 		{
 			assert(value != 0);
 
-			Matrix_For_Loop_Row_Column(N, M, [&_data = data, value](unsigned int ri, unsigned int ci) { _data[ri][ci] = _data[ri][ci] / value; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &value](unsigned int ri, unsigned int ci) { _data[ri][ci] = _data[ri][ci] / value; });
 			return *this;
 		}
 
 		Matrix operator *(const T value) const
 		{
 			Matrix result{};
-			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &result, value](unsigned int ri, unsigned int ci) { result(ri, ci) = _data[ri][ci] * value; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &result, &value](unsigned int ri, unsigned int ci) { result(ri, ci) = _data[ri][ci] * value; });
 			return result;
 		}
 
 		Matrix& operator *=(const T value)
 		{
-			Matrix_For_Loop_Row_Column(N, M, [&_data = data, value](unsigned int ri, unsigned int ci) { _data[ri][ci] = _data[ri][ci] * value; });
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &value](unsigned int ri, unsigned int ci) { _data[ri][ci] = _data[ri][ci] * value; });
 			return *this;
 		}
 
 		Matrix& operator ^=(const T exponent)
 		{
 			T absExponent = abs(exponent);
-			assert((absExponent - (int)absExponent) == 0);
-			Matrix_For_Loop_Row_Column(N, M, [&_data = data, exponent](unsigned int ri, unsigned int ci) 
+			bool exponentHasDecimalPlaces = ((absExponent - (int)absExponent) != 0);
+			Matrix_For_Loop_Row_Column(N, M, [&_data = data, &exponent, &exponentHasDecimalPlaces](unsigned int ri, unsigned int ci)
 				{ 
-					assert(_data[ri][ci] >= 0 || _data[ri][ci] < 0);
+					assert(_data[ri][ci] >= 0 || (_data[ri][ci] < 0 && !exponentHasDecimalPlaces));
 					_data[ri][ci] = pow(_data[ri][ci], exponent);
 				}
 			);
@@ -212,10 +212,10 @@
 			return data;
 		}
 
-		Matrix<T, 1, M> GetRow(int row)
+		Matrix<T, 1, M> GetRow(int row) const
 		{
 			assert(row >= 0 && row < N);
-			Matrix<T, 1, M> result;
+			Matrix<T, 1, M> result{};
 			for (unsigned int m = 0; m < M; m++)
 			{
 				result(0, m) = data[row][m];
@@ -224,10 +224,10 @@
 			return result;
 		}
 
-		Matrix<T, N, 1> GetColumn(int column)
+		Matrix<T, N, 1> GetColumn(int column) const
 		{
 			assert(column >= 0 && column < M);
-			Matrix<T, N, 1> result;
+			Matrix<T, N, 1> result{};
 			for (unsigned int n = 0; n < N; n++)
 			{
 				result.Data()[n][0] = data[n][column];
@@ -418,7 +418,7 @@
 		}
 
 		template<typename U, unsigned int P, unsigned int Q>
-		friend void PrintMatrix(Matrix<U, P, Q> matrix);
+		friend void Print(Matrix<U, P, Q> matrix);
 	};
 
 	template<typename T>
@@ -448,11 +448,11 @@
 			}
 
 			template<typename U, unsigned int P, unsigned int Q>
-			friend void PrintMatrix(Matrix<U, P, Q> matrix);
+			friend void Print(Matrix<U, P, Q> matrix);
 	};
 
 	template<typename U, unsigned int P, unsigned int Q>
-	void PrintMatrix(Matrix<U, P, Q> matrix)
+	void Print(Matrix<U, P, Q> matrix)
 	{
 		printf("\n\n");
 		for (unsigned int n = 0; n < P; n++)
