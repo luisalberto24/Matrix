@@ -227,7 +227,7 @@
 				BaseMatrix<T, N, 1> result{};
 				for (unsigned int n = 0; n < N; n++)
 				{
-					result.Data()[n][0] = data[n][column];
+					result(n, 0) = data[n][column];
 				}
 
 				return result;
