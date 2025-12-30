@@ -371,7 +371,7 @@
 
 			T Determinant() const
 			{
-				assert(N == M && N > 0);
+				assert(N == M);
 				if (N > 2)
 				{
 					T det = 0;
@@ -430,13 +430,13 @@
 
 			bool IsInvertible()
 			{
-				assert(N == M && N > 0);
+				assert(N == M);
 				return (Determinant() != 0);
 			}
 
 			static Matrix Identity()
 			{
-				assert(N == M && N > 0);
+				assert(N == M);
 				Matrix result{};
 				for (unsigned int ri = 0; ri < N; ri++)
 				{
