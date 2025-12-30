@@ -65,6 +65,12 @@
 				return data[r][c];
 			}
 
+			const T& operator()(unsigned int r, unsigned int c) const
+			{
+				assert(r < N && c < M);
+				return data[r][c];
+			}
+
 			BaseMatrix operator +(const BaseMatrix& matrix) const
 			{
 				BaseMatrix result(*this);

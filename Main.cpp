@@ -38,7 +38,6 @@ int main()
     printf("\n\nExtracting GetColumn:");
     Mat2x1d mxt = matrix.GetColumn(0);
     Print(mxt);
-
     printf("\n\nExtracting GetRow:");
     Mat1x2d mxt2 = matrix.GetRow(0);
     Print(mxt2.Traspose());
