@@ -482,7 +482,7 @@
 
 			T Determinant() const
 			{
-				return Det1x1();
+				return this->data[0][0];
 			}
 
 			Matrix<T, 1, 1> Inverse() const
@@ -505,10 +505,6 @@
 
 			template<typename U, unsigned int P, unsigned int Q>
 			friend void Print(BaseMatrix<U, 1, 1> matrix);
-
-		private:
-
-			T Det1x1() const { return this->data[0][0]; }
 	};
 
 	// typedef Matrix<float, 1, 0> Mat1f;
