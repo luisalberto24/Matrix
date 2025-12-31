@@ -529,11 +529,11 @@
 	template<typename U, unsigned int P, unsigned int Q>
 	void Print(BaseMatrix<U, P, Q> matrix)
 	{
+		constexpr const char* format = !std::is_same_v<U, int> ? "%.8f\t" : "%d\t";
 		printf("\n\n");
 		for (unsigned int n = 0; n < P; n++)
 		{
-			printf("\t|\t");
-			constexpr const char* format = !std::is_same_v<U, int> ? "%.8f\t" : "%d\t";
+			printf("\t|\t");			
 			for (unsigned int m = 0; m < Q; m++)
 			{
 				printf(format, matrix(n, m));
