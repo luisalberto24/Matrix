@@ -14,7 +14,7 @@ int main()
     printf("\nEnd\n");
 
     printf("\nxxxx==================================================================================================xxx\n");
-    Mat4x4d::ArrayType array = { {3,5,8,54}, {32, 92,-34,33}, {800.23,4,3,2}, {-24,-98,-43,-3} };
+    Mat4x4d::ArrayType array = { {7, 1,4,70}, {32, 92,-34,33}, {800.23,4,3,2}, {-24,-98,-43,-3} };
     printf("\n==================================================================================================\n");
     printf("\nCreate unique ptr matrix with TypeFactory:\n");
     std::unique_ptr<Mat4x4d> mat4_4d_u = TypeFactory::Create_Unique_Ptr<Mat4x4d>(array);
@@ -69,10 +69,15 @@ int main()
 
     Print(mat4f);
     printf("\n\nMatrix Inverse * Matrix = Identity:\n");
-    Mat4x4f mat4tf = mat4f * mat4x4f;
+    Print(mat4f * mat4x4f);
 
+    Mat2x2f mat2x2f_1 = { {-5.1f, 2.3f }, {-8.1f, 4.3f } };
+    Mat2x3f mat2x3f_2 = {{ -3.1f, 15.3f, 10.30f }, { -5.1f, 2.3f, 30.54f } };
+    printf("\n\nMatrix Multiplication Sample (2 x 3):\n");
+    Print(mat2x2f_1 * mat2x3f_2);
 
-    Print(mat4tf);
+    Print(mat2x2f_1);
+    Print(mat2x3f_2);
 
     printf("\n\nPress any key.\n");
     int v = getchar();

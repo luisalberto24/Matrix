@@ -48,13 +48,17 @@
 				*this = matrix;
 			}
 
-			BaseMatrix(ArrayType&& array) noexcept
+			BaseMatrix(const ArrayType&& array) noexcept
 			{
 				*this = array;
 			}
 
-			BaseMatrix(ArrayType& array) noexcept
+			BaseMatrix(const ArrayType& array) noexcept
 			{
+				*this = array;
+			}
+
+			BaseMatrix(std::initializer_list<std::initializer_list<T>> array) noexcept {
 				*this = array;
 			}
 
@@ -93,7 +97,7 @@
 
 			BaseMatrix& operator -=(const BaseMatrix& matrix)
 			{
-				MatrixForLoopRowColumn<N, M>([&_data = data, &matrix](unsigned int r, unsigned int c) { _data[r][c] -= matrix.data[r][c]; });
+				MatrixForLoopRowColumn<N, M>([&_data = data, &matrix](unsigned int r, unsigned int c) { _data[r][c] -= matrix(r, c); });
 				return *this;
 			}
 
@@ -171,10 +175,10 @@
 			BaseMatrix<T, N, P> operator *(const BaseMatrix<T, M, P>& matrix) const
 			{
 				BaseMatrix<T, N, P> result{};
-				MatrixForLoopRowColumn<N, M>([&_data = data, &result, &matrix](unsigned int r, unsigned int c) {
+				MatrixForLoopRowColumn<N, P>([&_data = data, &result, &matrix](unsigned int r, unsigned int c) {
 					for (unsigned int x = 0; x < M; x++)
 					{
-						result.data[r][c] += _data[r][x] * matrix.data[x][c];
+						result(r, c) += _data[r][x] * matrix(x, c);
 					}
 					});
 
@@ -183,7 +187,7 @@
 
 			BaseMatrix& operator =(const BaseMatrix& matrix)
 			{
-				MatrixForLoopRowColumn<N, M>([&_data = data, &matrix](unsigned int r, unsigned int c) { _data[r][c] = matrix.data[r][c]; });
+				MatrixForLoopRowColumn<N, M>([&_data = data, &matrix](unsigned int r, unsigned int c) { _data[r][c] = matrix(r, c); });
 				return *this;
 			}
 
@@ -196,6 +200,21 @@
 			BaseMatrix& operator =(const ArrayType&& array)
 			{
 				MatrixForLoopRowColumn<N, M>([&_data = data, &array](unsigned int r, unsigned int c) { _data[r][c] = array[r][c]; });
+				return *this;
+			}
+
+			BaseMatrix& operator =(std::initializer_list<std::initializer_list<T>>& array) 
+			{
+				unsigned int r = 0;
+				for(const std::initializer_list<T>* row = array.begin(); row != array.end() && r < N; ++row, ++r)
+				{
+					unsigned int c = 0;
+					for (const T* colItemPtr = row->begin(); colItemPtr != row->end() && c < M; ++colItemPtr, ++c)
+					{
+						data[r][c] = *colItemPtr;
+					}
+				}
+
 				return *this;
 			}
 
@@ -235,7 +254,7 @@
 
 			BaseMatrix& Add(const BaseMatrix& matrix)
 			{
-				MatrixForLoopRowColumn<N, M>([&_data = data, &matrix](unsigned int r, unsigned int c) { _data[r][c] += matrix.data[r][c]; });
+				MatrixForLoopRowColumn<N, M>([&_data = data, &matrix](unsigned int r, unsigned int c) { _data[r][c] += matrix(r, c); });
 				return *this;
 			}
 
@@ -296,22 +315,6 @@
 			friend void Print(BaseMatrix<U, P, Q> matrix);
 	};
 
-	template<typename U, unsigned int P, unsigned int Q>
-	void Print(BaseMatrix<U, P, Q> matrix)
-	{
-		printf("\n\n");
-		for (unsigned int n = 0; n < P; n++)
-		{
-			printf("\t|\t");
-			constexpr const char* format = !std::is_same_v<U, int> ? "%.8f\t" : "%d\t";
-			for (unsigned int m = 0; m < Q; m++)
-			{
-				printf(format, matrix(n, m));
-			}
-			printf("\t|\n");
-		}
-	}
-
 	template<typename T, unsigned int N, unsigned int M> 
 	class Matrix : public BaseMatrix<T, N, M>
 	{
@@ -325,8 +328,9 @@
 			Matrix() : BaseMatrix<T, N, M>(){}
 			Matrix(const BaseMatrix<T, N, M>& matrix) noexcept : BaseMatrix<T, N, M>(matrix) {}
 			Matrix(BaseMatrix<T, N, M>&& matrix) noexcept : BaseMatrix<T, N, M>(std::move(matrix)) {}
-			Matrix(ArrayType&& array) noexcept : BaseMatrix<T, N, M>(std::move(array)) {}
-			Matrix(ArrayType& array) noexcept : BaseMatrix<T, N, M>(array) {}
+			Matrix(const ArrayType&& array) noexcept : BaseMatrix<T, N, M>(std::move(array)) {}
+			Matrix(const ArrayType& array) noexcept : BaseMatrix<T, N, M>(array) {}
+			Matrix(std::initializer_list<std::initializer_list<T>> array) noexcept : BaseMatrix<T, N, M>(array) {}
 
 			Matrix Adjoint() const
 			{
@@ -478,8 +482,9 @@
 			Matrix() : BaseMatrix<T, 1, 1>() {}
 			Matrix(const BaseMatrix<T, 1, 1>& matrix) noexcept : BaseMatrix<T, 1, 1>(matrix) {}
 			Matrix(BaseMatrix<T, 1, 1>&& matrix) noexcept : BaseMatrix<T, 1, 1>(std::move(matrix)) {}
-			Matrix(ArrayType&& array) noexcept : BaseMatrix<T, 1, 1>(std::move(array)) {}
-			Matrix(ArrayType& array) noexcept : BaseMatrix<T, 1, 1>(array) {}
+			Matrix(const ArrayType&& array) noexcept : BaseMatrix<T, 1, 1>(std::move(array)) {}
+			Matrix(const ArrayType& array) noexcept : BaseMatrix<T, 1, 1>(array) {}
+			Matrix(std::initializer_list<std::initializer_list<T>> array) noexcept : BaseMatrix<T, 1, 1>(array) {}
 
 			Matrix<T, 1, 1> Adjoint() const
 			{
@@ -512,6 +517,23 @@
 			template<typename U, unsigned int P, unsigned int Q>
 			friend void Print(BaseMatrix<U, 1, 1> matrix);
 	};
+
+	template<typename U, unsigned int P, unsigned int Q>
+	void Print(BaseMatrix<U, P, Q> matrix)
+	{
+		printf("\n\n");
+		for (unsigned int n = 0; n < P; n++)
+		{
+			printf("\t|\t");
+			constexpr const char* format = !std::is_same_v<U, int> ? "%.8f\t" : "%d\t";
+			for (unsigned int m = 0; m < Q; m++)
+			{
+				printf(format, matrix(n, m));
+			}
+			printf("\t|\n");
+		}
+	}
+
 
 	// typedef Matrix<float, 1, 0> Mat1f;
 	typedef Matrix<float, 1, 2> Mat1x2f;
