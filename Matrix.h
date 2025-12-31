@@ -58,7 +58,7 @@
 				*this = array;
 			}
 
-			BaseMatrix(std::initializer_list<std::initializer_list<T>> array) noexcept {
+			BaseMatrix(std::initializer_list<std::initializer_list<T>>& array) {
 				*this = array;
 			}
 
@@ -205,9 +205,11 @@
 
 			BaseMatrix& operator =(std::initializer_list<std::initializer_list<T>>& array) 
 			{
+				assert(array.size() == N);
 				unsigned int r = 0;
 				for(const std::initializer_list<T>* row = array.begin(); row != array.end() && r < N; ++row, ++r)
 				{
+					assert(row->size() == M);
 					unsigned int c = 0;
 					for (const T* colItemPtr = row->begin(); colItemPtr != row->end() && c < M; ++colItemPtr, ++c)
 					{
