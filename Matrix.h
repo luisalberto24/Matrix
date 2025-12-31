@@ -506,7 +506,7 @@
 
 			bool IsInvertible()
 			{
-				return (Determinant() != 0);
+				return (this->data[0][0] != 0);
 			}
 
 			static Matrix<T, 1, 1> Identity()
