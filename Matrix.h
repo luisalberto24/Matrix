@@ -12,7 +12,10 @@
 	concept GreaterThanZero = (N > 0);
 
 	template<unsigned int N, unsigned int M, typename Function>
-	requires GreaterThanZero<N> && GreaterThanZero<M> && std::invocable<Function, unsigned int, unsigned int>
+	requires 
+		GreaterThanZero<N> && 
+		GreaterThanZero<M> && 
+		std::invocable<Function, unsigned int, unsigned int>
 	void MatrixForLoopRowColumn(Function executeFunction)
 	{
 		for (unsigned int r = 0; r < N; r++)
@@ -25,7 +28,10 @@
 	}
 
 	template <typename T, unsigned int N, unsigned M>
-	requires (GreaterThanZero<N> && GreaterThanZero<M>)
+	requires 
+		std::is_arithmetic_v<T> && 
+		GreaterThanZero<N> && 
+		GreaterThanZero<M>
 	class BaseMatrix
 	{
 		public:		

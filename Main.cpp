@@ -12,9 +12,9 @@ int main()
     Print(*mat2_2i_u.get());
     printf("Item: %d\n", mat2_2i_u->Data()[0][1]);
     printf("\nEnd\n");
-    printf("Prueba Nueva\n");
+    printf("New test\n");
     Print((Mat2x2f{ {1.0f, 1.5f}, {1.0f, 1.5f} }) * (Mat2x2f{ {1.0f, 1.5f}, {1.0f, 1.5f} }));
-    printf("End Prueba Nueva\n");
+    printf("End new test\n");
 
     printf("\nxxxx==================================================================================================xxx\n");
     Mat4x4d::ArrayType array = { {7, 1,4,70}, {32, 92,-34,33}, {800.23,4,3,2}, {-24,-98,-43,-3} };
