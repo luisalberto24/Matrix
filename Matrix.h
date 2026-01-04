@@ -47,7 +47,7 @@
 			BaseMatrix(const std::initializer_list<std::initializer_list<T>>& array) 
 			{ 
 				const size_t rowSize = array.size();
-				if (!(rowSize != N && rowSize == 1  && array.begin()->size() == 0))
+				if (!(rowSize == 1  && array.begin()->size() == 0))
 				{
 					assert(rowSize == N);
 					unsigned int r = 0;
@@ -470,7 +470,7 @@
 			Matrix(BaseMatrix<T, 1, 1>&& matrix) noexcept : BaseMatrix<T, 1, 1>(std::move(matrix)) {}
 			explicit Matrix(const ArrayType&& array) noexcept : BaseMatrix<T, 1, 1>(std::move(array)) {}
 			explicit Matrix(const ArrayType& array) noexcept : BaseMatrix<T, 1, 1>(array) {}
-			Matrix(std::initializer_list<const std::initializer_list<T>> array) noexcept : BaseMatrix<T, 1, 1>(array) {}
+			Matrix(const std::initializer_list<std::initializer_list<T>>& array) noexcept : BaseMatrix<T, 1, 1>(array) {}
 
 			Matrix<T, 1, 1> Adjoint() const
 			{

@@ -8,7 +8,6 @@
 int main()
 {
     Mat2x1f mat2_1f = { {1}, {2} };
-    mat2_1f = { {} };
     Print(mat2_1f);
     printf("\nStart\n");
     std::unique_ptr<Mat2x2i> mat2_2i_u = std::make_unique<Mat2x2i>(Mat2x2i::ArrayType{ {2,3}, {4,5} });
