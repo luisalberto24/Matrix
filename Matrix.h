@@ -39,7 +39,7 @@
 		protected:
 			ArrayType data{};
 		public:
-			BaseMatrix() = default;
+			BaseMatrix() noexcept = default;
 			BaseMatrix(const BaseMatrix& matrix) noexcept { *this = matrix; }
 			BaseMatrix(BaseMatrix&& matrix) noexcept { *this = matrix; }
 			explicit BaseMatrix(const ArrayType&& array) noexcept { *this = array; };
@@ -311,7 +311,7 @@
 
 		public:
 
-			Matrix() : BaseMatrix<T, N, M>(){}
+			Matrix() noexcept : BaseMatrix<T, N, M>(){}
 			Matrix(const BaseMatrix<T, N, M>& matrix) noexcept : BaseMatrix<T, N, M>(matrix) {}
 			Matrix(BaseMatrix<T, N, M>&& matrix) noexcept : BaseMatrix<T, N, M>(std::move(matrix)) {}
 			explicit Matrix(const ArrayType&& array) noexcept : BaseMatrix<T, N, M>(std::move(array)) {}
@@ -465,7 +465,7 @@
 
 		public:
 
-			Matrix() : BaseMatrix<T, 1, 1>() {}
+			Matrix() noexcept : BaseMatrix<T, 1, 1>() {}
 			Matrix(const BaseMatrix<T, 1, 1>& matrix) noexcept : BaseMatrix<T, 1, 1>(matrix) {}
 			Matrix(BaseMatrix<T, 1, 1>&& matrix) noexcept : BaseMatrix<T, 1, 1>(std::move(matrix)) {}
 			explicit Matrix(const ArrayType&& array) noexcept : BaseMatrix<T, 1, 1>(std::move(array)) {}
