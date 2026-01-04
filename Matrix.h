@@ -32,40 +32,35 @@
 		std::is_arithmetic_v<T> && 
 		GreaterThanZero<N> && 
 		GreaterThanZero<M>
-	class BaseMatrix
-	{
-		public:		
+			class BaseMatrix
+		{
+		public:
 			using ArrayType = T[N][M];
 		protected:
-			ArrayType data;
+			ArrayType data{};
 		public:
-			BaseMatrix()
-			{
-				*this = { {} };
-			}
-
-			BaseMatrix(const BaseMatrix& matrix) noexcept
-			{
-				*this = matrix;
-			}
-
-			BaseMatrix(BaseMatrix&& matrix) noexcept
-			{
-				*this = matrix;
-			}
-
-			BaseMatrix(const ArrayType&& array) noexcept
-			{
-				*this = array;
-			}
-
-			BaseMatrix(const ArrayType& array) noexcept
-			{
-				*this = array;
-			}
-
-			BaseMatrix(std::initializer_list<std::initializer_list<T>>& array) {
-				*this = array;
+			BaseMatrix() = default;
+			BaseMatrix(const BaseMatrix& matrix) noexcept { *this = matrix; }
+			BaseMatrix(BaseMatrix&& matrix) noexcept { *this = matrix; }
+			explicit BaseMatrix(const ArrayType&& array) noexcept { *this = array; };
+			explicit BaseMatrix(const ArrayType& array) noexcept{ *this = array; }
+			BaseMatrix(const std::initializer_list<std::initializer_list<T>>& array) 
+			{ 
+				const size_t rowSize = array.size();
+				if (!(rowSize != N && rowSize == 1  && array.begin()->size() == 0))
+				{
+					assert(rowSize == N);
+					unsigned int r = 0;
+					for (const std::initializer_list<T>* row = array.begin(); row != array.end() && r < N; ++row, ++r)
+					{
+						assert(row->size() == M);
+						unsigned int c = 0;
+						for (const T* colItemPtr = row->begin(); colItemPtr != row->end() && c < M; ++colItemPtr, ++c)
+						{
+							data[r][c] = *colItemPtr;
+						}
+					}
+				}
 			}
 
 		public:
@@ -209,23 +204,6 @@
 				return *this;
 			}
 
-			BaseMatrix& operator =(std::initializer_list<std::initializer_list<T>>& array) 
-			{
-				assert(array.size() == N);
-				unsigned int r = 0;
-				for(const std::initializer_list<T>* row = array.begin(); row != array.end() && r < N; ++row, ++r)
-				{
-					assert(row->size() == M);
-					unsigned int c = 0;
-					for (const T* colItemPtr = row->begin(); colItemPtr != row->end() && c < M; ++colItemPtr, ++c)
-					{
-						data[r][c] = *colItemPtr;
-					}
-				}
-
-				return *this;
-			}
-
 			const ArrayType& Data() const
 			{
 				return data;
@@ -336,9 +314,9 @@
 			Matrix() : BaseMatrix<T, N, M>(){}
 			Matrix(const BaseMatrix<T, N, M>& matrix) noexcept : BaseMatrix<T, N, M>(matrix) {}
 			Matrix(BaseMatrix<T, N, M>&& matrix) noexcept : BaseMatrix<T, N, M>(std::move(matrix)) {}
-			Matrix(const ArrayType&& array) noexcept : BaseMatrix<T, N, M>(std::move(array)) {}
-			Matrix(const ArrayType& array) noexcept : BaseMatrix<T, N, M>(array) {}
-			Matrix(std::initializer_list<std::initializer_list<T>> array) noexcept : BaseMatrix<T, N, M>(array) {}
+			explicit Matrix(const ArrayType&& array) noexcept : BaseMatrix<T, N, M>(std::move(array)) {}
+			explicit Matrix(const ArrayType& array) noexcept : BaseMatrix<T, N, M>(array) {}
+			Matrix(const std::initializer_list<std::initializer_list<T>>& array) noexcept : BaseMatrix<T, N, M>(array) {}
 
 			Matrix Adjoint() const
 			{
@@ -490,9 +468,9 @@
 			Matrix() : BaseMatrix<T, 1, 1>() {}
 			Matrix(const BaseMatrix<T, 1, 1>& matrix) noexcept : BaseMatrix<T, 1, 1>(matrix) {}
 			Matrix(BaseMatrix<T, 1, 1>&& matrix) noexcept : BaseMatrix<T, 1, 1>(std::move(matrix)) {}
-			Matrix(const ArrayType&& array) noexcept : BaseMatrix<T, 1, 1>(std::move(array)) {}
-			Matrix(const ArrayType& array) noexcept : BaseMatrix<T, 1, 1>(array) {}
-			Matrix(std::initializer_list<std::initializer_list<T>> array) noexcept : BaseMatrix<T, 1, 1>(array) {}
+			explicit Matrix(const ArrayType&& array) noexcept : BaseMatrix<T, 1, 1>(std::move(array)) {}
+			explicit Matrix(const ArrayType& array) noexcept : BaseMatrix<T, 1, 1>(array) {}
+			Matrix(std::initializer_list<const std::initializer_list<T>> array) noexcept : BaseMatrix<T, 1, 1>(array) {}
 
 			Matrix<T, 1, 1> Adjoint() const
 			{
