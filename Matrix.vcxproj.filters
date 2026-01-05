@@ -18,6 +18,9 @@
     <ClCompile Include="Main.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="BufferView.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Matrix.h">

@@ -1,12 +1,49 @@
 #include "stdio.h"
 #include "Matrix.h"
 #include "TypeFactory.h"
+#include "BufferView.h"
 #include <direct.h>
 #include <limits.h>
 #include <string.h>
 
+
 int main()
 {
+	BufferView<int, 5> bv;
+    BufferView<std::string, 2> info;
+    info[0] = "this is a test";
+    printf("\n%s", info[0].c_str());
+
+    BufferView<Mat2x2f, 2> mat4x4BufferView;
+	mat4x4BufferView[1] = Mat2x2f::Identity();
+    Print(mat4x4BufferView[1]);
+
+    printf("\nPointer (Begin): %zu", reinterpret_cast<uintptr_t>(bv.begin()));
+    printf("\nPointer (End): %zu", reinterpret_cast<uintptr_t>(bv.end()));
+    printf("\nSize with(Pointer): %d\n", static_cast<int>(bv.end() - bv.begin()));
+    printf("\nSize: %d\n", bv.size());
+    
+    bv[0] = 10;
+	bv[1] = 20;
+    bv[2] = 25;
+    bv[3] = 800;
+    bv[4] = -40;
+
+    unsigned int i = 0;
+    for (const auto& p : bv)
+    {
+        i++;
+        printf("%d) Item: %d\n", i, p);
+    }
+
+    i = 0;
+    for (const int* ptr = bv.cbegin(); ptr != bv.cend(); ++ptr)
+    {
+        i++;
+        printf("%d) Item: %d\n", i, *ptr);
+
+    }
+
     Mat2x1f mat2_1f = { {1}, {2} };
     Print(mat2_1f);
     printf("\nStart\n");
