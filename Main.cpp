@@ -15,8 +15,14 @@ int main()
     printf("\n%s", info[0].c_str());
 
     BufferView<Mat2x2f, 2> mat4x4BufferView;
-	mat4x4BufferView[1] = Mat2x2f::Identity();
-    Print(mat4x4BufferView[1]);
+	mat4x4BufferView[0] = Mat2x2f::Identity();
+	mat4x4BufferView[1] = { {-1, 2}, {356, 4} };
+    auto x = 0;
+    for(const auto & mat : mat4x4BufferView)
+    {
+        printf("\nMatrix %d:", ++x);
+        Print(mat);
+	}
 
     printf("\nPointer (Begin): %zu", reinterpret_cast<uintptr_t>(bv.begin()));
     printf("\nPointer (End): %zu", reinterpret_cast<uintptr_t>(bv.end()));
