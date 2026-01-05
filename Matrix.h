@@ -5,16 +5,14 @@
 	#include <string.h>
 	#include <cassert>
 	#include <concepts>
+	#include "Concepts.h"
 
 	using namespace std;
 
-	template <unsigned int N>
-	concept GreaterThanZero = (N > 0);
-
 	template<unsigned int N, unsigned int M, typename Function>
 	requires 
-		GreaterThanZero<N> && 
-		GreaterThanZero<M> && 
+		nsConcepts::GreaterThanZero<N> && 
+		nsConcepts::GreaterThanZero<M> &&
 		std::invocable<Function, unsigned int, unsigned int>
 	void MatrixForLoopRowColumn(Function executeFunction)
 	{
@@ -30,10 +28,10 @@
 	template <typename T, unsigned int N, unsigned M>
 	requires 
 		std::is_arithmetic_v<T> && 
-		GreaterThanZero<N> && 
-		GreaterThanZero<M>
-			class BaseMatrix
-		{
+		nsConcepts::GreaterThanZero<N> && 
+		nsConcepts::GreaterThanZero<M>
+	class BaseMatrix
+	{
 		public:
 			using ArrayType = T[N][M];
 		protected:

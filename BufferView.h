@@ -1,6 +1,9 @@
 #pragma once 
+#include "Concepts.h"
 
 template<typename T, unsigned int N>
+requires 
+    nsConcepts::GreaterThanZero<N>
 struct BufferView 
 {
     constexpr T* begin() noexcept { return  &data[0]; }
