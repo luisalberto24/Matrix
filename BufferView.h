@@ -11,7 +11,6 @@ struct BufferView
     constexpr T* begin() noexcept { return  &data[0]; }
     constexpr const T* begin() const noexcept { return  &data[0]; }
     constexpr const T* cbegin() const noexcept { return  &data[0]; }
-    constexpr T* end() noexcept { return &data[N]; }
     constexpr const T* end() const noexcept { return &data[N]; }
     constexpr const T* cend() const noexcept { return &data[N]; }
     constexpr unsigned int size() const noexcept { return N; }
