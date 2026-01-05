@@ -14,11 +14,11 @@ int main()
     info[0] = "this is a test";
     printf("\n%s", info[0].c_str());
 
-    BufferView<Mat2x2f, 2> mat4x4BufferView;
-	mat4x4BufferView[0] = Mat2x2f::Identity();
-	mat4x4BufferView[1] = { {-1, 2}, {356, 4} };
+    BufferView<Mat2x2f, 2> mat2x2fBufferView;
+    mat2x2fBufferView[0] = Mat2x2f::Identity();
+    mat2x2fBufferView[1] = { {-1, 2}, {356, 4} };
     auto x = 0;
-    for(const auto & mat : mat4x4BufferView)
+    for(const auto & mat : mat2x2fBufferView)
     {
         printf("\nMatrix %d:", ++x);
         Print(mat);
