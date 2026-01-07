@@ -93,9 +93,9 @@
 			BaseMatrix(BaseMatrix&& matrix) noexcept { *this = matrix; }
 			explicit BaseMatrix(const ArrayType&& array) noexcept { *this = array; };
 			explicit BaseMatrix(const ArrayType& array) noexcept{ *this = array; }
-			BaseMatrix(const VectorView<T, ViewType::Row>& row) { *this = row; }
-			BaseMatrix(const VectorView<T, ViewType::Column>& column) { *this = column;}
-			BaseMatrix(const std::initializer_list<std::initializer_list<T>>& array) 
+			BaseMatrix(const VectorView<T, ViewType::Row>& row) noexcept { *this = row; }
+			BaseMatrix(const VectorView<T, ViewType::Column>& column) noexcept { *this = column;}
+			BaseMatrix(const std::initializer_list<std::initializer_list<T>>& array) noexcept
 			{ 
 				const size_t rowSize = array.size();
 				if (!(rowSize == 1  && array.begin()->size() == 0))
@@ -395,8 +395,8 @@
 			Matrix(BaseMatrix<T, N, M>&& matrix) noexcept : BaseMatrix<T, N, M>(std::move(matrix)) {}
 			explicit Matrix(const ArrayType&& array) noexcept : BaseMatrix<T, N, M>(std::move(array)) {}
 			explicit Matrix(const ArrayType& array) noexcept : BaseMatrix<T, N, M>(array) {}
-			Matrix(const VectorView<T, ViewType::Row>& row) : BaseMatrix<T, N, M>(row) {}
-			Matrix(const VectorView<T, ViewType::Column>& column) : BaseMatrix<T, N, M>(column) {}
+			Matrix(const VectorView<T, ViewType::Row>& row) noexcept : BaseMatrix<T, N, M>(row) {}
+			Matrix(const VectorView<T, ViewType::Column>& column) noexcept : BaseMatrix<T, N, M>(column) {}
 			Matrix(const std::initializer_list<std::initializer_list<T>>& array) noexcept : BaseMatrix<T, N, M>(array) {}
 
 			Matrix Adjoint() const
@@ -551,8 +551,8 @@
 			Matrix(BaseMatrix<T, 1, 1>&& matrix) noexcept : BaseMatrix<T, 1, 1>(std::move(matrix)) {}
 			explicit Matrix(const ArrayType&& array) noexcept : BaseMatrix<T, 1, 1>(std::move(array)) {}
 			explicit Matrix(const ArrayType& array) noexcept : BaseMatrix<T, 1, 1>(array) {}
-			Matrix(const VectorView<T, ViewType::Row>& row) : BaseMatrix<T, 1, 1>(row) {}
-			Matrix(const VectorView<T, ViewType::Column>& column) : BaseMatrix<T, 1, 1>(column) {}
+			Matrix(const VectorView<T, ViewType::Row>& row) noexcept : BaseMatrix<T, 1, 1>(row) {}
+			Matrix(const VectorView<T, ViewType::Column>& column) noexcept : BaseMatrix<T, 1, 1>(column) {}
 			Matrix(const std::initializer_list<std::initializer_list<T>>& array) noexcept : BaseMatrix<T, 1, 1>(array) {}
 
 			Matrix<T, 1, 1> Adjoint() const
