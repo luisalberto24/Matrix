@@ -24,16 +24,18 @@ int main()
     // End -- Accessing matrix elements using Row and Column views.
 
     printf("\nBegin -- Accessing matrix elements using Row and Column views and printing them.\n");
-    Print(mat2x2fBufferView[1].Row(0));
-    Print(mat2x2fBufferView[1].Row(1));
+    // Print(mat2x2fBufferView[1].Row(0));
+    // Print(mat2x2fBufferView[1].Row(1));
     Print(mat2x2fBufferView[1].Column(0));
-    Print(mat2x2fBufferView[1].Column(1));
+    // Print(mat2x2fBufferView[1].Column(1));
     printf("\nEnd -- Accessing matrix elements using Row and Column views and printing them.\n");
 
     printf("\nBegin -- Accessing matrix elements using Row and Column views to convert them to Matrixes.\n");
+    printf("Mat 1x2 Float from Row:");
     Mat1x2f matRow = mat2x2fBufferView[1].Row(0);
     Print(matRow);
-    Mat2x1f matColumn = mat2x2fBufferView[1].Column(1);
+    printf("Mat 2x1 Float from Column:");
+    Mat2x1f matColumn = mat2x2fBufferView[1].Column(0);
     Print(matColumn);
     printf("\nEnd -- Accessing matrix elements using Row and Column views to convert them to Matrixes.\n");
 

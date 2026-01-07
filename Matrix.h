@@ -284,7 +284,7 @@
 				assert(M == 1 && column.size() == N);
 				for (unsigned int r = 0; r < N; r++)
 				{
-					data[0][r] = column(r);
+					data[r][0] = column(r);
 				}
 
 				return *this;
@@ -604,11 +604,13 @@
 		}
 	}
 
-	template<typename P, ViewType Q>
-	void Print(const VectorView<P, Q>& vectorView)
+	template<typename P, ViewType viewType>
+	void Print(const VectorView<P, viewType>& vectorView)
 	{
 		constexpr const char* format = !std::is_same_v<P, int> ? "%.8f\t" : "%d\t";
-		printf("\n\n\t|\t");
+		printf("\n\n");
+		printf("View Type: %s", viewType == ViewType::Row ? "Row" : "Column");
+		printf("\t|\t");
 		
 		for (unsigned int n = 0; n < vectorView.size(); n++)
 		{
