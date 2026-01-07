@@ -26,6 +26,53 @@
 		}
 	}
 
+	enum class ViewType { Row, Column };
+	template<typename T, ViewType viewType>
+	class VectorView
+	{
+		public:
+			VectorView(T* array, unsigned int size, unsigned int stride) noexcept :
+				viewData(array),
+				viewSize(size),
+				viewStride(stride)
+			{
+			}
+
+			VectorView& operator=(const std::initializer_list<T>& array)
+			{
+				assert(array.size() == viewSize);
+
+				unsigned int r = 0;
+				for (const T& value : array) { viewData[r * viewStride] = value; r++; }
+
+				return *this;
+			}
+
+			T& operator()(unsigned int i)
+			{
+				return viewData[i * viewStride];
+			}
+
+			const T& operator()(unsigned int i) const
+			{
+				return viewData[i * viewStride];
+			}
+
+			unsigned int size() const noexcept
+			{
+				return viewSize;
+			}
+
+			template<typename P, ViewType Q>
+			friend void Print(const VectorView<P, Q>&);
+
+		private:
+
+			T* viewData;
+			unsigned int viewSize;
+			unsigned int viewStride;
+	};
+
 	template <typename T, unsigned int N, unsigned M>
 	requires 
 		std::is_arithmetic_v<T> && 
@@ -38,36 +85,6 @@
 			using RowArrayType = T[N];
 			using ColumnArrayType = T[M];
 
-			class Row
-			{
-				public:
-					using RowReferenceType = T(&)[M];
-				public:
-					Row(const RowReferenceType array) noexcept: row(array) {}
-					Row& operator=(const std::initializer_list<T> array)
-					{
-						assert(array.size() == M);
-						std::copy(array.begin(), array.end(), row);
-					
-						return *this;
-					}
-
-					T& operator[](unsigned int c) 
-					{ 
-						assert(c < M);
-						return row[c];
-					}
-
-					const T& operator[](unsigned int c) const
-					{
-						assert(c < M);
-						return row[c];
-					}
-
-			private:
-				RowReferenceType row;
-			};
-
 		protected:
 			ArrayType data{};
 		public:
@@ -76,6 +93,8 @@
 			BaseMatrix(BaseMatrix&& matrix) noexcept { *this = matrix; }
 			explicit BaseMatrix(const ArrayType&& array) noexcept { *this = array; };
 			explicit BaseMatrix(const ArrayType& array) noexcept{ *this = array; }
+			BaseMatrix(const VectorView<T, ViewType::Row>& row) { *this = row; }
+			BaseMatrix(const VectorView<T, ViewType::Column>& column) { *this = column;}
 			BaseMatrix(const std::initializer_list<std::initializer_list<T>>& array) 
 			{ 
 				const size_t rowSize = array.size();
@@ -95,18 +114,32 @@
 				}
 			}
 
+			
+
 		public:
 
-			Row operator[](unsigned int row)
+			VectorView<T, ViewType::Row> Row(unsigned int r)
 			{
-				assert(row < N);
-				return Row(data[row]);
+				assert(r < N);
+				return VectorView<T, ViewType::Row>(&data[r][0], N, 1);
 			}
 
-			const Row operator[](unsigned int row) const
+			VectorView<T, ViewType::Column> Column(unsigned int c)
 			{
-				assert(row < N);
-				return Row(const_cast<Row::RowReferenceType>(data[row]));
+				assert(c < M);
+				return VectorView<T, ViewType::Column>(&data[0][c], N, M);
+			}
+
+			const VectorView<const T, ViewType::Row> Row(unsigned int r) const
+			{
+				assert(r < N);
+				return VectorView<const T, ViewType::Row>(&data[r][0], N, 1);
+			}
+
+			const VectorView<const T, ViewType::Column> Column(unsigned int c) const
+			{
+				assert(c < M);
+				return VectorView<const T, ViewType::Column>(&data[0][c], N, M);
 			}
 
 			T& operator()(unsigned int r, unsigned int c)
@@ -221,14 +254,39 @@
 			BaseMatrix<T, N, P> operator *(const BaseMatrix<T, M, P>& matrix) const
 			{
 				BaseMatrix<T, N, P> result{};
-				MatrixForLoopRowColumn<N, P>([&_data = data, &result, &matrix](unsigned int r, unsigned int c) {
-					for (unsigned int x = 0; x < M; x++)
+
+				MatrixForLoopRowColumn<N, P>([&_data = data, &result, &matrix](unsigned int r, unsigned int c) 
 					{
-						result(r, c) += _data[r][x] * matrix(x, c);
+						for (unsigned int x = 0; x < M; x++)
+						{
+							result(r, c) += _data[r][x] * matrix(x, c);
+						}
 					}
-					});
+				);
 
 				return result;
+			}
+
+			BaseMatrix& operator =(const VectorView<T, ViewType::Row>& row)
+			{
+				assert(N == 1 && row.size() == M);
+				for(unsigned int c = 0; c < M; c++)
+				{
+					data[0][c] = row(c);
+				}
+
+				return *this;
+			}
+
+			BaseMatrix& operator =(const VectorView<T, ViewType::Column>& column)
+			{
+				assert(M == 1 && column.size() == N);
+				for (unsigned int r = 0; r < N; r++)
+				{
+					data[0][r] = column(r);
+				}
+
+				return *this;
 			}
 
 			BaseMatrix& operator =(const BaseMatrix& matrix)
@@ -257,64 +315,6 @@
 			ArrayType& Data()
 			{
 				return data;
-			}
-
-			BaseMatrix<T, 1, M> GetRow(int row) const
-			{
-				assert(row >= 0 && row < N);
-				BaseMatrix<T, 1, M> result{};
-				for (unsigned int m = 0; m < M; m++)
-				{
-					result(0, m) = data[row][m];
-				}
-
-				return result;
-			}
-
-			void SetRow(unsigned int row, const std::initializer_list<T>& array)
-			{
-				const size_t arraySize = array.size();
-				assert(row < N && arraySize == M);
-				unsigned int c = 0;
-				for (const T* ptr = array.begin(); ptr != array.end() && c < M; ++ptr, ++c)
-				{
-					data[row][c] = *ptr;
-				}
-			}
-
-			void SetRow(unsigned int row, const RowArrayType& array)
-			{
-				assert(row < N);
-				for (unsigned int c = 0; c < N; c++) { data[row][c] = array[c]; }
-			}
-
-			BaseMatrix<T, N, 1> GetColumn(int column) const
-			{
-				assert(column >= 0 && column < M);
-				BaseMatrix<T, N, 1> result{};
-				for (unsigned int n = 0; n < N; n++)
-				{
-					result(n, 0) = data[n][column];
-				}
-
-				return result;
-			}
-
-			void SetColumn(unsigned int column, const std::initializer_list<T>& array)
-			{
-				const size_t arraySize = array.size();
-				assert(column < M && arraySize == N);
-				unsigned int r = 0;
-				for (const T* ptr = array.begin(); ptr != array.end() && r < N; ++ptr, ++r)
-				{
-					data[r][column] = *ptr;
-				}
-			}
-
-			void SetColumn(unsigned int column, const ColumnArrayType& array)
-			{
-				assert(column < M);
-				for (unsigned int r = 0; r < N; r++) { data[r][column] = array[r]; }
 			}
 
 			BaseMatrix& Add(const BaseMatrix& matrix)
@@ -395,6 +395,8 @@
 			Matrix(BaseMatrix<T, N, M>&& matrix) noexcept : BaseMatrix<T, N, M>(std::move(matrix)) {}
 			explicit Matrix(const ArrayType&& array) noexcept : BaseMatrix<T, N, M>(std::move(array)) {}
 			explicit Matrix(const ArrayType& array) noexcept : BaseMatrix<T, N, M>(array) {}
+			Matrix(const VectorView<T, ViewType::Row>& row) : BaseMatrix<T, N, M>(row) {}
+			Matrix(const VectorView<T, ViewType::Column>& column) : BaseMatrix<T, N, M>(column) {}
 			Matrix(const std::initializer_list<std::initializer_list<T>>& array) noexcept : BaseMatrix<T, N, M>(array) {}
 
 			Matrix Adjoint() const
@@ -549,6 +551,8 @@
 			Matrix(BaseMatrix<T, 1, 1>&& matrix) noexcept : BaseMatrix<T, 1, 1>(std::move(matrix)) {}
 			explicit Matrix(const ArrayType&& array) noexcept : BaseMatrix<T, 1, 1>(std::move(array)) {}
 			explicit Matrix(const ArrayType& array) noexcept : BaseMatrix<T, 1, 1>(array) {}
+			Matrix(const VectorView<T, ViewType::Row>& row) : BaseMatrix<T, 1, 1>(row) {}
+			Matrix(const VectorView<T, ViewType::Column>& column) : BaseMatrix<T, 1, 1>(column) {}
 			Matrix(const std::initializer_list<std::initializer_list<T>>& array) noexcept : BaseMatrix<T, 1, 1>(array) {}
 
 			Matrix<T, 1, 1> Adjoint() const
@@ -597,6 +601,20 @@
 			}
 			printf("\t|\n");
 		}
+	}
+
+	template<typename P, ViewType Q>
+	void Print(const VectorView<P, Q>& vectorView)
+	{
+		constexpr const char* format = !std::is_same_v<P, int> ? "%.8f\t" : "%d\t";
+		printf("\n\n\t|\t");
+		
+		for (unsigned int n = 0; n < vectorView.size(); n++)
+		{
+			printf(format, vectorView(n));
+		}
+		
+		printf("\t|\n");
 	}
 
 	using Mat1x2f = Matrix<float, 1, 2>;

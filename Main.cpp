@@ -17,12 +17,25 @@ int main()
     mat2x2fBufferView[0] = Mat2x2f::Identity();
     mat2x2fBufferView[1] = { {-1, 2}, {356, 4} };
 
-    //Begin -- Same behavior using different approach.
-    mat2x2fBufferView[1][1] = { -800.0f, -5072.3f };
-   
-    Mat2x2f::RowArrayType row = { -900.1f, -9035.3f };
-    mat2x2fBufferView[1].SetRow(0, row);
-    //End -- Same behavior using different approach.
+    // Begin -- Accessing matrix elements using Row and Column views.
+    mat2x2fBufferView[1].Row(0) = {-800.0f, -5072.3f};
+    mat2x2fBufferView[1].Row(1) = { -99.1f, -9111.3f };
+    mat2x2fBufferView[1].Column(0) = { -11.35f, -88.1f };
+    // End -- Accessing matrix elements using Row and Column views.
+
+    printf("\nBegin -- Accessing matrix elements using Row and Column views and printing them.\n");
+    Print(mat2x2fBufferView[1].Row(0));
+    Print(mat2x2fBufferView[1].Row(1));
+    Print(mat2x2fBufferView[1].Column(0));
+    Print(mat2x2fBufferView[1].Column(1));
+    printf("\nEnd -- Accessing matrix elements using Row and Column views and printing them.\n");
+
+    printf("\nBegin -- Accessing matrix elements using Row and Column views to convert them to Matrixes.\n");
+    Mat1x2f matRow = mat2x2fBufferView[1].Row(0);
+    Print(matRow);
+    Mat2x1f matColumn = mat2x2fBufferView[1].Column(1);
+    Print(matColumn);
+    printf("\nEnd -- Accessing matrix elements using Row and Column views to convert them to Matrixes.\n");
 
     auto x = 0;
     for(const auto & mat : mat2x2fBufferView)
@@ -54,14 +67,12 @@ int main()
     {
         i++;
         printf("%d) Item: %d\n", i, *ptr);
-
     }
 
     Mat3x2f mat2_1f = { {-1.3f, -92.35f}, {2.3f, 7.5f}, {-25.2f, 56.1f} };
-    printf("\nChanging rows with [rowindex] and std::initializer_list<T>:\n");
-    mat2_1f[1] = { -60.2f, -659.23f };
+    mat2_1f.Column(1) = { -1.3f, -92.35f, 0.569f};
     Print(mat2_1f);
-    printf("\nEnd Changing rows with [rowindex] and std::initializer_list<T>:\n");
+
     printf("\nStart\n");
     std::unique_ptr<Mat2x2i> mat2_2i_u = std::make_unique<Mat2x2i>(Mat2x2i::ArrayType{ {2,3}, {4,5} });
     Print(*mat2_2i_u.get());
@@ -93,12 +104,6 @@ int main()
     Matrix<double, 2, 2> matrix({ { 2.0f, 3.0f }, { -1.0f, 5.0f } });
     matrix ^= 8;
     Print(matrix);
-    printf("\n\nExtracting GetColumn:");
-    Mat2x1d mxt = matrix.GetColumn(0);
-    Print(mxt);
-    printf("\n\nExtracting GetRow:");
-    Mat1x2d mxt2 = matrix.GetRow(0);
-    Print(mxt2.Traspose());
 
     printf("\n\nFloat Matrix (2x2):");
     Print(matrix);
