@@ -114,8 +114,6 @@
 				}
 			}
 
-			
-
 		public:
 
 			VectorView<T, ViewType::Row> Row(unsigned int r)
