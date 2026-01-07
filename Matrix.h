@@ -31,6 +31,7 @@
 	class VectorView
 	{
 		public:
+			VectorView() noexcept = delete;
 			VectorView(T* array, unsigned int size, unsigned int stride) noexcept :
 				viewData(array),
 				viewSize(size),
@@ -38,7 +39,7 @@
 			{
 			}
 
-			VectorView& operator=(const std::initializer_list<T>& array)
+			VectorView& operator=(const std::initializer_list<T>& array) noexcept
 			{
 				assert(array.size() == viewSize);
 
@@ -48,13 +49,15 @@
 				return *this;
 			}
 
-			T& operator()(unsigned int i)
+			T& operator()(unsigned int i) noexcept
 			{
+				assert(i < viewSize);
 				return viewData[i * viewStride];
 			}
 
-			const T& operator()(unsigned int i) const
+			const T& operator()(unsigned int i) const noexcept
 			{
+				assert(i < viewSize);
 				return viewData[i * viewStride];
 			}
 
