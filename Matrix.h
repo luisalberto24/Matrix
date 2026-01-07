@@ -4,6 +4,7 @@
 	#include <iostream>
 	#include <string.h>
 	#include <cassert>
+	#include <stdlib.h>
 	#include <concepts>
 	#include "Concepts.h"
 
@@ -34,6 +35,39 @@
 	{
 		public:
 			using ArrayType = T[N][M];
+			using RowArrayType = T[N];
+			using ColumnArrayType = T[M];
+
+			class Row
+			{
+				public:
+					using RowReferenceType = T(&)[M];
+				public:
+					Row(const RowReferenceType array) noexcept: row(array) {}
+					Row& operator=(const std::initializer_list<T> array)
+					{
+						assert(array.size() == M);
+						std::copy(array.begin(), array.end(), row);
+					
+						return *this;
+					}
+
+					T& operator[](unsigned int c) 
+					{ 
+						assert(c < M);
+						return row[c];
+					}
+
+					const T& operator[](unsigned int c) const
+					{
+						assert(c < M);
+						return row[c];
+					}
+
+			private:
+				RowReferenceType row;
+			};
+
 		protected:
 			ArrayType data{};
 		public:
@@ -53,15 +87,28 @@
 					{
 						assert(row->size() == M);
 						unsigned int c = 0;
-						for (const T* colItemPtr = row->begin(); colItemPtr != row->end() && c < M; ++colItemPtr, ++c)
+						for (const T* item = row->begin(); item != row->end() && c < M; ++item, ++c)
 						{
-							data[r][c] = *colItemPtr;
+							data[r][c] = *item;
 						}
 					}
 				}
 			}
 
 		public:
+
+			Row operator[](unsigned int row)
+			{
+				assert(row < N);
+				return Row(data[row]);
+			}
+
+			const Row operator[](unsigned int row) const
+			{
+				assert(row < N);
+				return Row(const_cast<Row::RowReferenceType>(data[row]));
+			}
+
 			T& operator()(unsigned int r, unsigned int c)
 			{
 				assert(r < N && c < M);
@@ -224,6 +271,23 @@
 				return result;
 			}
 
+			void SetRow(unsigned int row, const std::initializer_list<T>& array)
+			{
+				const size_t arraySize = array.size();
+				assert(row < N && arraySize == M);
+				unsigned int c = 0;
+				for (const T* ptr = array.begin(); ptr != array.end() && c < M; ++ptr, ++c)
+				{
+					data[row][c] = *ptr;
+				}
+			}
+
+			void SetRow(unsigned int row, const RowArrayType& array)
+			{
+				assert(row < N);
+				for (unsigned int c = 0; c < N; c++) { data[row][c] = array[c]; }
+			}
+
 			BaseMatrix<T, N, 1> GetColumn(int column) const
 			{
 				assert(column >= 0 && column < M);
@@ -234,6 +298,23 @@
 				}
 
 				return result;
+			}
+
+			void SetColumn(unsigned int column, const std::initializer_list<T>& array)
+			{
+				const size_t arraySize = array.size();
+				assert(column < M && arraySize == N);
+				unsigned int r = 0;
+				for (const T* ptr = array.begin(); ptr != array.end() && r < N; ++ptr, ++r)
+				{
+					data[r][column] = *ptr;
+				}
+			}
+
+			void SetColumn(unsigned int column, const ColumnArrayType& array)
+			{
+				assert(column < M);
+				for (unsigned int r = 0; r < N; r++) { data[r][column] = array[r]; }
 			}
 
 			BaseMatrix& Add(const BaseMatrix& matrix)
@@ -518,102 +599,99 @@
 		}
 	}
 
+	using Mat1x2f = Matrix<float, 1, 2>;
+	using Mat1x3f = Matrix<float, 1, 3>;
+	using Mat1x4f = Matrix<float, 1, 4>;
+	using Mat2x1f = Matrix<float, 2, 1>;
+	using Mat2x2f = Matrix<float, 2, 2>;
+	using Mat2x3f = Matrix<float, 2, 3>;
+	using Mat2x4f = Matrix<float, 2, 4>;
+	using Mat3x1f = Matrix<float, 3, 1>;
+	using Mat3x2f = Matrix<float, 3, 2>;
+	using Mat3x3f = Matrix<float, 3, 3>;
+	using Mat3x4f = Matrix<float, 3, 4>;
+	using Mat4x1f = Matrix<float, 4, 1>;
+	using Mat4x2f = Matrix<float, 4, 2>;
+	using Mat4x3f = Matrix<float, 4, 3>;
+	using Mat4x4f = Matrix<float, 4, 4>;
 
-	// typedef Matrix<float, 1, 0> Mat1f;
-	typedef Matrix<float, 1, 2> Mat1x2f;
-	typedef Matrix<float, 1, 3> Mat1x3f;
-	typedef Matrix<float, 1, 4> Mat1x4f;
-	typedef Matrix<float, 2, 1> Mat2x1f;
-	typedef Matrix<float, 2, 2> Mat2x2f;
-	typedef Matrix<float, 2, 3> Mat2x3f;
-	typedef Matrix<float, 2, 4> Mat2x4f;
-	typedef Matrix<float, 3, 1> Mat3x1f;
-	typedef Matrix<float, 3, 2> Mat3x2f;
-	typedef Matrix<float, 3, 3> Mat3x3f;
-	typedef Matrix<float, 3, 4> Mat3x4f;
-	typedef Matrix<float, 4, 1> Mat4x1f;
-	typedef Matrix<float, 4, 2> Mat4x2f;
-	typedef Matrix<float, 4, 3> Mat4x3f;
-	typedef Matrix<float, 4, 4> Mat4x4f;
+	using Mat1x2i = Matrix<int, 1, 2>;
+	using Mat1x3i = Matrix<int, 1, 3>;
+	using Mat1x4i = Matrix<int, 1, 4>;
+	using Mat2x1i = Matrix<int, 2, 1>;
+	using Mat2x2i = Matrix<int, 2, 2>;
+	using Mat2x3i = Matrix<int, 2, 3>;
+	using Mat2x4i = Matrix<int, 2, 4>;
+	using Mat3x1i = Matrix<int, 3, 1>;
+	using Mat3x2i = Matrix<int, 3, 2>;
+	using Mat3x3i = Matrix<int, 3, 3>;
+	using Mat3x4i = Matrix<int, 3, 4>;
+	using Mat4x1i = Matrix<int, 4, 1>;
+	using Mat4x2i = Matrix<int, 4, 2>;
+	using Mat4x3i = Matrix<int, 4, 3>;
+	using Mat4x4i = Matrix<int, 4, 4>;
 
-	typedef Matrix<int, 1, 2> Mat1x2i;
-	typedef Matrix<int, 1, 3> Mat1x3i;
-	typedef Matrix<int, 1, 4> Mat1x4i;
-	typedef Matrix<int, 2, 1> Mat2x1i;
-	typedef Matrix<int, 2, 2> Mat2x2i;
-	typedef Matrix<int, 2, 3> Mat2x3i;
-	typedef Matrix<int, 2, 4> Mat2x4i;
-	typedef Matrix<int, 3, 1> Mat3x1i;
-	typedef Matrix<int, 3, 2> Mat3x2i;
-	typedef Matrix<int, 3, 3> Mat3x3i;
-	typedef Matrix<int, 3, 4> Mat3x4i;
-	typedef Matrix<int, 4, 1> Mat4x1i;
-	typedef Matrix<int, 4, 2> Mat4x2i;
-	typedef Matrix<int, 4, 3> Mat4x3i;
-	typedef Matrix<int, 4, 4> Mat4x4i;
+	using Mat1x2d = Matrix<double, 1, 2>;
+	using Mat1x3d = Matrix<double, 1, 3>;
+	using Mat1x4d = Matrix<double, 1, 4>;
+	using Mat2x1d = Matrix<double, 2, 1>;
+	using Mat2x2d = Matrix<double, 2, 2>;
+	using Mat2x3d = Matrix<double, 2, 3>;
+	using Mat2x4d = Matrix<double, 2, 4>;
+	using Mat3x1d = Matrix<double, 3, 1>;
+	using Mat3x2d = Matrix<double, 3, 2>;
+	using Mat3x3d = Matrix<double, 3, 3>;
+	using Mat3x4d = Matrix<double, 3, 4>;
+	using Mat4x1d = Matrix<double, 4, 1>;
+	using Mat4x2d = Matrix<double, 4, 2>;
+	using Mat4x3d = Matrix<double, 4, 3>;
+	using Mat4x4d = Matrix<double, 4, 4>;
 
-	typedef Matrix<double, 1, 2> Mat1x2d;
-	typedef Matrix<double, 1, 3> Mat1x3d;
-	typedef Matrix<double, 1, 4> Mat1x4d;
-	typedef Matrix<double, 2, 1> Mat2x1d;
-	typedef Matrix<double, 2, 2> Mat2x2d;
-	typedef Matrix<double, 2, 3> Mat2x3d;
-	typedef Matrix<double, 2, 4> Mat2x4d;
-	typedef Matrix<double, 3, 1> Mat3x1d;
-	typedef Matrix<double, 3, 2> Mat3x2d;
-	typedef Matrix<double, 3, 3> Mat3x3d;
-	typedef Matrix<double, 3, 4> Mat3x4d;
-	typedef Matrix<double, 4, 1> Mat4x1d;
-	typedef Matrix<double, 4, 2> Mat4x2d;
-	typedef Matrix<double, 4, 3> Mat4x3d;
-	typedef Matrix<double, 4, 4> Mat4x4d;
+	using Mat1x2fPtr = Mat1x2f*;
+	using Mat1x3fPtr = Mat1x3f*;
+	using Mat1x4fPtr = Mat1x4f*;
+	using Mat2x1fPtr = Mat2x1f*;
+	using Mat2x2fPtr = Mat2x2f*;
+	using Mat2x3fPtr = Mat2x3f*;
+	using Mat2x4fPtr = Mat2x4f*;
+	using Mat3x1fPtr = Mat3x1f*;
+	using Mat3x2fPtr = Mat3x2f*;
+	using Mat3x3fPtr = Mat3x3f*;
+	using Mat3x4fPtr = Mat3x4f*;
+	using Mat4x1fPtr = Mat4x1f*;
+	using Mat4x2fPtr = Mat4x2f*;
+	using Mat4x3fPtr = Mat4x3f*;
+	using Mat4x4fPtr = Mat4x4f*;
 
-	// matrix pointers
-	typedef Mat1x2f* Mat1x2fPtr;
-	typedef Mat1x3f* Mat1x3fPtr;
-	typedef Mat1x4f* Mat1x4fPtr;
-	typedef Mat2x1f* Mat2x1fPtr;
-	typedef Mat2x2f* Mat2x2fPtr;
-	typedef Mat2x3f* Mat2x3fPtr;
-	typedef Mat2x4f* Mat2x4fPtr;
-	typedef Mat3x1f* Mat3x1fPtr;
-	typedef Mat3x2f* Mat3x2fPtr;
-	typedef Mat3x3f* Mat3x3fPtr;
-	typedef Mat3x4f* Mat3x4fPtr;
-	typedef Mat4x1f* Mat4x1fPtr;
-	typedef Mat4x2f* Mat4x2fPtr;
-	typedef Mat4x3f* Mat4x3fPtr;
-	typedef Mat4x4f* Mat4x4fPtr;
+	using Mat1x2iPtr = Mat1x2i*;
+	using Mat1x3iPtr = Mat1x3i*;
+	using Mat1x4iPtr = Mat1x4i*;
+	using Mat2x1iPtr = Mat2x1i*;
+	using Mat2x2iPtr = Mat2x2i*;
+	using Mat2x3iPtr = Mat2x3i*;
+	using Mat2x4iPtr = Mat2x4i*;
+	using Mat3x1iPtr = Mat3x1i*;
+	using Mat3x2iPtr = Mat3x2i*;
+	using Mat3x3iPtr = Mat3x3i*;
+	using Mat3x4iPtr = Mat3x4i*;
+	using Mat4x1iPtr = Mat4x1i*;
+	using Mat4x2iPtr = Mat4x2i*;
+	using Mat4x3iPtr = Mat4x3i*;
+	using Mat4x4iPtr = Mat4x4i*;
 
-	typedef Mat1x2i* Mat1x2iPtr;
-	typedef Mat1x3i* Mat1x3iPtr;
-	typedef Mat1x4i* Mat1x4iPtr;
-	typedef Mat2x1i* Mat2x1iPtr;
-	typedef Mat2x2i* Mat2x2iPtr;
-	typedef Mat2x3i* Mat2x3iPtr;
-	typedef Mat2x4i* Mat2x4iPtr;
-	typedef Mat3x1i* Mat3x1iPtr;
-	typedef Mat3x2i* Mat3x2iPtr;
-	typedef Mat3x3i* Mat3x3iPtr;
-	typedef Mat3x4i* Mat3x4iPtr;
-	typedef Mat4x1i* Mat4x1iPtr;
-	typedef Mat4x2i* Mat4x2iPtr;
-	typedef Mat4x3i* Mat4x3iPtr;
-	typedef Mat4x4i* Mat4x4iPtr;
-
-	typedef Mat1x2d* Mat1x2dPtr;
-	typedef Mat1x3d* Mat1x3dPtr;
-	typedef Mat1x4d* Mat1x4dPtr;
-	typedef Mat2x1d* Mat2x1dPtr;
-	typedef Mat2x2d* Mat2x2dPtr;
-	typedef Mat2x3d* Mat2x3dPtr;
-	typedef Mat2x4d* Mat2x4dPtr;
-	typedef Mat3x1d* Mat3x1dPtr;
-	typedef Mat3x2d* Mat3x2dPtr;
-	typedef Mat3x3d* Mat3x3dPtr;
-	typedef Mat3x4d* Mat3x4dPtr;
-	typedef Mat4x1d* Mat4x1dPtr;
-	typedef Mat4x2d* Mat4x2dPtr;
-	typedef Mat4x3d* Mat4x3dPtr;
-	typedef Mat4x4d* Mat4x4dPtr;
+	using Mat1x2dPtr = Mat1x2d*;
+	using Mat1x3dPtr = Mat1x3d*;
+	using Mat1x4dPtr = Mat1x4d*;
+	using Mat2x1dPtr = Mat2x1d*;
+	using Mat2x2dPtr = Mat2x2d*;
+	using Mat2x3dPtr = Mat2x3d*;
+	using Mat2x4dPtr = Mat2x4d*;
+	using Mat3x1dPtr = Mat3x1d*;
+	using Mat3x2dPtr = Mat3x2d*;
+	using Mat3x3dPtr = Mat3x3d*;
+	using Mat3x4dPtr = Mat3x4d*;
+	using Mat4x1dPtr = Mat4x1d*;
+	using Mat4x2dPtr = Mat4x2d*;
+	using Mat4x3dPtr = Mat4x3d*;
+	using Mat4x4dPtr = Mat4x4d*;
 
