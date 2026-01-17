@@ -12,9 +12,17 @@ struct BufferView
     BufferView() noexcept = delete;
     explicit BufferView(T* begin) noexcept : begPtr { begin } { assert(begin != nullptr); endPtr = begin + N; }
     explicit BufferView(T* begin, T* end, unsigned int size) noexcept : begPtr{ begin }, endPtr{ end } 
-        { 
-        assert((begin + size) == (end + 1));
-        assert(size < N && size > 0 && begin != nullptr && end != nullptr && (begin + size) == (end +1)); endPtr = begin + size; }
+    { 
+        assert
+            (
+                size < N && 
+                size > 0 && 
+                begin != nullptr && 
+                end != nullptr && 
+                (begin + size) == (end +1)
+            ); 
+        endPtr = begin + size; 
+    }
     constexpr T* begin() noexcept { return begPtr; }
     constexpr const T* begin() const noexcept { return begPtr; }
     constexpr const T* cbegin() const noexcept { return begPtr; }

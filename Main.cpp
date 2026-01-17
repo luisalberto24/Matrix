@@ -14,7 +14,7 @@ int main()
     info[0] = "this is a test";
     printf("\n%s", info[0].c_str());
 
-    std::string b[5] = { "uno","p", "x", "z", "w"};
+    std::string b[5] = { "One","Two", "Three", "Four", "Five"};
     BufferView<std::string, 5> bufferView(&b[0], &b[1], 2);
 
     int xx = 0;
