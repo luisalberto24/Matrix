@@ -3,7 +3,6 @@
 #include <cassert>
 #include "Concepts.h"
 
-
 template<typename T, unsigned int N>
 requires 
     nsConcepts::GreaterThanZero<N>
