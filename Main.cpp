@@ -1,6 +1,7 @@
 #include "stdio.h"
 #include "Matrix.h"
 #include "TypeFactory.h"
+#include "Buffer.h"
 #include "BufferView.h"
 #include <direct.h>
 #include <limits.h>
@@ -8,39 +9,49 @@
 
 int main()
 {
-	BufferView<int, 5> bv;
-    BufferView<std::string, 2> info;
+	Buffer<int, 5> bv;
+    Buffer<std::string, 2> info;
     info[0] = "this is a test";
     printf("\n%s", info[0].c_str());
 
-    BufferView<Mat2x2f, 2> mat2x2fBufferView;
-    mat2x2fBufferView[0] = Mat2x2f::Identity();
-    mat2x2fBufferView[1] = { {-1, 2}, {356, 4} };
+    std::string b[5] = { "uno","p", "x", "z", "w"};
+    BufferView<std::string, 5> bufferView(&b[0], &b[1], 2);
+
+    int xx = 0;
+    printf("\n");
+    for (const auto& item : bufferView)
+    {
+        printf("\integer %d: %s\n", ++xx, item.c_str());
+    }
+
+    Buffer<Mat2x2f, 2> mat2x2fBuffer;
+    mat2x2fBuffer[0] = Mat2x2f::Identity();
+    mat2x2fBuffer[1] = { {-1, 2}, {356, 4} };
 
     // Begin -- Accessing matrix elements using Row and Column views.
-    mat2x2fBufferView[1].Row(0) = {-800.0f, -5072.3f};
-    mat2x2fBufferView[1].Row(1) = { -99.1f, -9111.3f };
-    mat2x2fBufferView[1].Column(0) = { -11.35f, -88.1f };
+    mat2x2fBuffer[1].Row(0) = {-800.0f, -5072.3f};
+    mat2x2fBuffer[1].Row(1) = { -99.1f, -9111.3f };
+    mat2x2fBuffer[1].Column(0) = { -11.35f, -88.1f };
     // End -- Accessing matrix elements using Row and Column views.
 
     printf("\nBegin -- Accessing matrix elements using Row and Column views and printing them.\n");
     // Print(mat2x2fBufferView[1].Row(0));
     // Print(mat2x2fBufferView[1].Row(1));
-    Print(mat2x2fBufferView[1].Column(0));
+    Print(mat2x2fBuffer[1].Column(0));
     // Print(mat2x2fBufferView[1].Column(1));
     printf("\nEnd -- Accessing matrix elements using Row and Column views and printing them.\n");
 
     printf("\nBegin -- Accessing matrix elements using Row and Column views to convert them to Matrixes.\n");
     printf("Mat 1x2 Float from Row:");
-    Mat1x2f matRow = mat2x2fBufferView[1].Row(0);
+    Mat1x2f matRow = mat2x2fBuffer[1].Row(0);
     Print(matRow);
     printf("Mat 2x1 Float from Column:");
-    Mat2x1f matColumn = mat2x2fBufferView[1].Column(0);
+    Mat2x1f matColumn = mat2x2fBuffer[1].Column(0);
     Print(matColumn);
     printf("\nEnd -- Accessing matrix elements using Row and Column views to convert them to Matrixes.\n");
 
     auto x = 0;
-    for(const auto & mat : mat2x2fBufferView)
+    for(const auto & mat : mat2x2fBuffer)
     {
         printf("\nMatrix %d:", ++x);
         Print(mat);
