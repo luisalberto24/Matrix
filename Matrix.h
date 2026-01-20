@@ -7,6 +7,7 @@
 	#include <stdlib.h>
 	#include <concepts>
 	#include "Concepts.h"
+	#include "VectorView.h"
 
 	using namespace std;
 
@@ -26,56 +27,6 @@
 		}
 	}
 
-	enum class ViewType { Row, Column };
-	template<typename T, ViewType viewType>
-	class VectorView
-	{
-		public:
-			VectorView() noexcept = delete;
-			VectorView(T* array, unsigned int size, unsigned int stride) noexcept :
-				viewData(array),
-				viewSize(size),
-				viewStride(stride)
-			{
-			}
-
-			VectorView& operator=(const std::initializer_list<T>& array) noexcept
-			{
-				assert(array.size() == viewSize);
-
-				unsigned int r = 0;
-				for (const T& value : array) { viewData[r * viewStride] = value; r++; }
-
-				return *this;
-			}
-
-			T& operator()(unsigned int i) noexcept
-			{
-				assert(i < viewSize);
-				return viewData[i * viewStride];
-			}
-
-			const T& operator()(unsigned int i) const noexcept
-			{
-				assert(i < viewSize);
-				return viewData[i * viewStride];
-			}
-
-			unsigned int size() const noexcept
-			{
-				return viewSize;
-			}
-
-			template<typename P, ViewType Q>
-			friend void Print(const VectorView<P, Q>&);
-
-		private:
-
-			T* viewData;
-			unsigned int viewSize;
-			unsigned int viewStride;
-	};
-
 	template <typename T, unsigned int N, unsigned M>
 	requires 
 		std::is_arithmetic_v<T> && 
@@ -92,6 +43,11 @@
 			ArrayType data{};
 		public:
 			BaseMatrix() noexcept = default;
+			BaseMatrix(T value) noexcept 
+			{
+				assert(N == M && N > 1);
+				MatrixForLoopRowColumn<N, M>([&_data = data, value](unsigned int r, unsigned int c) { _data[r][c] = (T)(r != c ? 0 : value); });
+			}
 			BaseMatrix(const BaseMatrix& matrix) noexcept { *this = matrix; }
 			BaseMatrix(BaseMatrix&& matrix) noexcept { *this = matrix; }
 			explicit BaseMatrix(const ArrayType&& array) noexcept { *this = array; };
@@ -392,6 +348,7 @@
 		public:
 
 			Matrix() noexcept : BaseMatrix<T, N, M>(){}
+			Matrix(float value) noexcept : BaseMatrix<T, N, M>(value) {}
 			Matrix(const BaseMatrix<T, N, M>& matrix) noexcept : BaseMatrix<T, N, M>(matrix) {}
 			Matrix(BaseMatrix<T, N, M>&& matrix) noexcept : BaseMatrix<T, N, M>(std::move(matrix)) {}
 			explicit Matrix(const ArrayType&& array) noexcept : BaseMatrix<T, N, M>(std::move(array)) {}
@@ -548,6 +505,7 @@
 		public:
 
 			Matrix() noexcept : BaseMatrix<T, 1, 1>() {}
+			Matrix(T value) noexcept = delete;
 			Matrix(const BaseMatrix<T, 1, 1>& matrix) noexcept : BaseMatrix<T, 1, 1>(matrix) {}
 			Matrix(BaseMatrix<T, 1, 1>&& matrix) noexcept : BaseMatrix<T, 1, 1>(std::move(matrix)) {}
 			explicit Matrix(const ArrayType&& array) noexcept : BaseMatrix<T, 1, 1>(std::move(array)) {}
@@ -635,6 +593,17 @@
 	using Mat4x2f = Matrix<float, 4, 2>;
 	using Mat4x3f = Matrix<float, 4, 3>;
 	using Mat4x4f = Matrix<float, 4, 4>;
+	using Mat5x1f = Matrix<float, 5, 1>;
+	using Mat5x2f = Matrix<float, 5, 2>;
+	using Mat5x3f = Matrix<float, 5, 3>;
+	using Mat5x4f = Matrix<float, 5, 4>;
+	using Mat5x5f = Matrix<float, 5, 5>;
+	using Mat6x1f = Matrix<float, 6, 1>;
+	using Mat6x2f = Matrix<float, 6, 2>;
+	using Mat6x3f = Matrix<float, 6, 3>;
+	using Mat6x4f = Matrix<float, 6, 4>;
+	using Mat6x5f = Matrix<float, 6, 5>;
+	using Mat6x6f = Matrix<float, 6, 6>;
 
 	using Mat1x2i = Matrix<int, 1, 2>;
 	using Mat1x3i = Matrix<int, 1, 3>;
@@ -651,6 +620,17 @@
 	using Mat4x2i = Matrix<int, 4, 2>;
 	using Mat4x3i = Matrix<int, 4, 3>;
 	using Mat4x4i = Matrix<int, 4, 4>;
+	using Mat5x1i = Matrix<int, 5, 1>;
+	using Mat5x2i = Matrix<int, 5, 2>;
+	using Mat5x3i = Matrix<int, 5, 3>;
+	using Mat5x4i = Matrix<int, 5, 4>;
+	using Mat5x5i = Matrix<int, 5, 5>;
+	using Mat6x1i = Matrix<int, 6, 1>;
+	using Mat6x2i = Matrix<int, 6, 2>;
+	using Mat6x3i = Matrix<int, 6, 3>;
+	using Mat6x4i = Matrix<int, 6, 4>;
+	using Mat6x5i = Matrix<int, 6, 5>;
+	using Mat6x6i = Matrix<int, 6, 6>;
 
 	using Mat1x2d = Matrix<double, 1, 2>;
 	using Mat1x3d = Matrix<double, 1, 3>;
@@ -667,6 +647,17 @@
 	using Mat4x2d = Matrix<double, 4, 2>;
 	using Mat4x3d = Matrix<double, 4, 3>;
 	using Mat4x4d = Matrix<double, 4, 4>;
+	using Mat5x1d = Matrix<double, 5, 1>;
+	using Mat5x2d = Matrix<double, 5, 2>;
+	using Mat5x3d = Matrix<double, 5, 3>;
+	using Mat5x4d = Matrix<double, 5, 4>;
+	using Mat5x5d = Matrix<double, 5, 5>;
+	using Mat6x1d = Matrix<double, 6, 1>;
+	using Mat6x2d = Matrix<double, 6, 2>;
+	using Mat6x3d = Matrix<double, 6, 3>;
+	using Mat6x4d = Matrix<double, 6, 4>;
+	using Mat6x5d = Matrix<double, 6, 5>;
+	using Mat6x6d = Matrix<double, 6, 6>;
 
 	using Mat1x2fPtr = Mat1x2f*;
 	using Mat1x3fPtr = Mat1x3f*;
@@ -683,6 +674,17 @@
 	using Mat4x2fPtr = Mat4x2f*;
 	using Mat4x3fPtr = Mat4x3f*;
 	using Mat4x4fPtr = Mat4x4f*;
+	using Mat5x1fPtr = Mat5x1f*;
+	using Mat5x2fPtr = Mat5x2f*;
+	using Mat5x3fPtr = Mat5x3f*;
+	using Mat5x4fPtr = Mat5x4f*;
+	using Mat5x5fPtr = Mat5x5f*;
+	using Mat6x1fPtr = Mat6x1f*;
+	using Mat6x2fPtr = Mat6x2f*;
+	using Mat6x3fPtr = Mat6x3f*;
+	using Mat6x4fPtr = Mat6x4f*;
+	using Mat6x5fPtr = Mat6x5f*;
+	using Mat6x6fPtr = Mat6x6f*;
 
 	using Mat1x2iPtr = Mat1x2i*;
 	using Mat1x3iPtr = Mat1x3i*;
@@ -699,6 +701,17 @@
 	using Mat4x2iPtr = Mat4x2i*;
 	using Mat4x3iPtr = Mat4x3i*;
 	using Mat4x4iPtr = Mat4x4i*;
+	using Mat5x1iPtr = Mat5x1i*;
+	using Mat5x2iPtr = Mat5x2i*;
+	using Mat5x3iPtr = Mat5x3i*;
+	using Mat5x4iPtr = Mat5x4i*;
+	using Mat5x5iPtr = Mat5x5i*;
+	using Mat6x1iPtr = Mat6x1i*;
+	using Mat6x2iPtr = Mat6x2i*;
+	using Mat6x3iPtr = Mat6x3i*;
+	using Mat6x4iPtr = Mat6x4i*;
+	using Mat6x5iPtr = Mat6x5i*;
+	using Mat6x6iPtr = Mat6x6i*;
 
 	using Mat1x2dPtr = Mat1x2d*;
 	using Mat1x3dPtr = Mat1x3d*;
@@ -715,4 +728,51 @@
 	using Mat4x2dPtr = Mat4x2d*;
 	using Mat4x3dPtr = Mat4x3d*;
 	using Mat4x4dPtr = Mat4x4d*;
+	using Mat5x1dPtr = Mat5x1d*;
+	using Mat5x2dPtr = Mat5x2d*;
+	using Mat5x3dPtr = Mat5x3d*;
+	using Mat5x4dPtr = Mat5x4d*;
+	using Mat5x5dPtr = Mat5x5d*;
+	using Mat6x1dPtr = Mat6x1d*;
+	using Mat6x2dPtr = Mat6x2d*;
+	using Mat6x3dPtr = Mat6x3d*;
+	using Mat6x4dPtr = Mat6x4d*;
+	using Mat6x5dPtr = Mat6x5d*;
+	using Mat6x6dPtr = Mat6x6d*;
+
+	using Mat2d = Matrix<double, 2, 2>;
+	using Mat3d = Matrix<double, 3, 3>;
+	using Mat4d = Matrix<double, 4, 4>;
+	using Mat5d = Matrix<double, 5, 5>;
+	using Mat6d = Matrix<double, 6, 6>;
+
+	using Mat2f = Matrix<float, 2, 2>;
+	using Mat3f = Matrix<float, 3, 3>;
+	using Mat4f = Matrix<float, 4, 4>;
+	using Mat5f = Matrix<float, 5, 5>;
+	using Mat6f = Matrix<float, 6, 6>;
+
+	using Mat2i = Matrix<int, 2, 2>;
+	using Mat3i = Matrix<int, 3, 3>;
+	using Mat4i = Matrix<int, 4, 4>;
+	using Mat5i = Matrix<int, 5, 5>;
+	using Mat6i = Matrix<int, 6, 6>;
+
+	using Mat2dPtr = Mat2d*;
+	using Mat3dPtr = Mat3d*;
+	using Mat4dPtr = Mat4d*;
+	using Mat5dPtr = Mat5d*;
+	using Mat6dPtr = Mat6d*;
+
+	using Mat2fPtr = Mat2f*;
+	using Mat3fPtr = Mat3f*;
+	using Mat4fPtr = Mat4f*;
+	using Mat5fPtr = Mat5f*;
+	using Mat6fPtr = Mat6f*;
+			   
+	using Mat2iPtr = Mat2i*;
+	using Mat3iPtr = Mat3i*;
+	using Mat4iPtr = Mat4i*;
+	using Mat5iPtr = Mat5i*;
+	using Mat6iPtr = Mat6i*;
 

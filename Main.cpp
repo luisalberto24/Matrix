@@ -16,12 +16,17 @@ int main()
 
     std::string b[5] = { "One","Two", "Three", "Four", "Five"};
     BufferView<std::string, 5> bufferView(&b[0], &b[1], 2);
+    
+    printf("\nPrint Mat6f - Start Process...\n");
+    Mat6f matTest(1.0f);
+	Print(matTest);
+    printf("\nPrint Mat6f - End Process...\n");
 
     int xx = 0;
     printf("\n");
     for (const auto& item : bufferView)
     {
-        printf("\integer %d: %s\n", ++xx, item.c_str());
+        printf("integer %d: %s\n", ++xx, item.c_str());
     }
 
     Buffer<Mat2x2f, 2> mat2x2fBuffer;
