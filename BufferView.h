@@ -15,8 +15,6 @@ struct BufferView
     explicit BufferView(BufferViewArray& begin) noexcept : begPtr(&begin[0]), endPtr(&begin[N]){}
     explicit BufferView(T* begin, T* end, unsigned int size) noexcept : begPtr(begin), endPtr(end)
     { 
-        assert(begin + size);
-        assert(end + 1);
         assert
             (
                 size <= N && 
