@@ -11,23 +11,30 @@ int main()
 {
 	Buffer<int, 5> bv;
     Buffer<std::string, 2> info;
-    info[0] = "this is a test";
+    info[0] = "this is a test\n";
     printf("\n%s", info[0].c_str());
 
-    std::string b[5] = { "One","Two", "Three", "Four", "Five"};
-    BufferView<std::string, 5> bufferView(&b[0], &b[1], 2);
+    std::string b[7] = { "One","Two", "Three", "Four", "Five", "Six", "Seven"};
+    
+    BufferView<std::string, 7> bufferView1(b);
+    BufferView<std::string, 7> bufferView2(&b[0], &b[6], 6);
+    int xx = 0;
+    printf("\nBufferView 1\n\n");
+    for (const auto& item : bufferView1)
+    {
+        printf("integer %d: %s\n", ++xx, item.c_str());
+    }
+    
+    printf("\nBufferView 2\n\n");
+    for (const auto& item : bufferView2)
+    {
+        printf("integer %d: %s\n", ++xx, item.c_str());
+    }
     
     printf("\nPrint Mat6f - Start Process...\n");
     Mat6f matTest(1.0f);
 	Print(matTest);
     printf("\nPrint Mat6f - End Process...\n");
-
-    int xx = 0;
-    printf("\n");
-    for (const auto& item : bufferView)
-    {
-        printf("integer %d: %s\n", ++xx, item.c_str());
-    }
 
     Buffer<Mat2x2f, 2> mat2x2fBuffer;
     mat2x2fBuffer[0] = Mat2x2f::Identity();

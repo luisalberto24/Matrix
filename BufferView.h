@@ -3,22 +3,27 @@
 #include <cassert>
 #include "Concepts.h"
 
+
 template<typename T, unsigned int N>
 requires 
     nsConcepts::GreaterThanZero<N>
 struct BufferView 
 {
+    using BufferViewArray = T[N];
+
     BufferView() noexcept = delete;
-    explicit BufferView(T* begin) noexcept : begPtr { begin } { assert(begin != nullptr); endPtr = begin + N; }
-    explicit BufferView(T* begin, T* end, unsigned int size) noexcept : begPtr{ begin }, endPtr{ end } 
+    explicit BufferView(BufferViewArray& begin) noexcept : begPtr(&begin[0]), endPtr(&begin[N]){}
+    explicit BufferView(T* begin, T* end, unsigned int size) noexcept : begPtr(begin), endPtr(end)
     { 
+        assert(begin + size);
+        assert(end + 1);
         assert
             (
-                size < N && 
+                size <= N && 
                 size > 0 && 
                 begin != nullptr && 
                 end != nullptr && 
-                (begin + size) == (end +1)
+                (begin + size) <= (end + 1)
             ); 
         endPtr = begin + size; 
     }
