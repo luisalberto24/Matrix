@@ -348,7 +348,7 @@
 		public:
 
 			Matrix() noexcept : BaseMatrix<T, N, M>(){}
-			Matrix(float value) noexcept : BaseMatrix<T, N, M>(value) {}
+			Matrix(T value) noexcept : BaseMatrix<T, N, M>(value) {}
 			Matrix(const BaseMatrix<T, N, M>& matrix) noexcept : BaseMatrix<T, N, M>(matrix) {}
 			Matrix(BaseMatrix<T, N, M>&& matrix) noexcept : BaseMatrix<T, N, M>(std::move(matrix)) {}
 			explicit Matrix(const ArrayType&& array) noexcept : BaseMatrix<T, N, M>(std::move(array)) {}
