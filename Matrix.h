@@ -226,23 +226,13 @@
 
 			BaseMatrix& operator =(const VectorView<T, ViewType::Row>& row)
 			{
-				assert(N == 1 && row.size() == M);
-				for(unsigned int c = 0; c < M; c++)
-				{
-					data[0][c] = row(c);
-				}
-
+				this->TransformVectorViewToMatrix(row);
 				return *this;
 			}
 
 			BaseMatrix& operator =(const VectorView<T, ViewType::Column>& column)
 			{
-				assert(M == 1 && column.size() == N);
-				for (unsigned int r = 0; r < N; r++)
-				{
-					data[r][0] = column(r);
-				}
-
+				this->TransformVectorViewToMatrix(column);
 				return *this;
 			}
 
@@ -285,6 +275,14 @@
 				BaseMatrix<T, M, N> result{};
 				MatrixForLoopRowColumn<N, M>([&_data = data, &result](unsigned int r, unsigned int c) { result(c, r) = _data[r][c]; });
 				return result;
+			}
+
+			bool IsOrthonormal() const
+			{
+				// Should be a square matrix to be orthonormal.
+				// A matrix is orthonormal if its transpose is equal to its inverse, 
+				// which means that the product of the transpose and the original matrix should be the identity matrix.
+				return N > 1 && N == M && (Traspose() * (*this)).IsIdentity();
 			}
 
 			void ToIdentity()
@@ -335,6 +333,30 @@
 
 			template<typename U, unsigned int P, unsigned int Q>
 			friend void Print(BaseMatrix<U, P, Q> matrix);
+
+		private:
+			template<ViewType viewType>
+			void TransformVectorViewToMatrix(const VectorView<T, viewType>& view)
+			{
+				unsigned int viewSize = view.size();
+				unsigned int nSize = NSize();
+				unsigned int mSize = MSize();
+				assert((nSize == 1 && mSize == viewSize) || (nSize == viewSize && mSize == 1));
+				if (nSize == 1 && mSize == viewSize)
+				{
+					for (unsigned int i = 0; i < viewSize; i++)
+					{
+						data[0][i] = view(i);
+					}
+				}
+				else if (nSize == viewSize && mSize == 1)
+				{
+					for (unsigned int i = 0; i < viewSize; i++)
+					{
+						data[i][0] = view(i);
+					}
+				}
+			}
 	};
 
 	template<typename T, unsigned int N, unsigned int M> 

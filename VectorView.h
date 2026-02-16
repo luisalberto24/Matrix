@@ -53,7 +53,7 @@ class VectorView
 		template<typename P, ViewType Q>
 		friend void Print(const VectorView<P, Q>&);
 
-	private:
+	protected:
 
 		T* viewData;
 		unsigned int viewSize;

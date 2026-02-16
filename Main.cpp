@@ -1,4 +1,4 @@
-#include "stdio.h"
+﻿#include "stdio.h"
 #include "Matrix.h"
 #include "TypeFactory.h"
 #include "Buffer.h"
@@ -9,6 +9,13 @@
 
 int main()
 {
+    Mat3x3f mat3_3f = { {-0.25f, -1.0f, 0.35f}, {1.0f, 10.32f, -98.32f}, {0.89f, 0.98f, -1.25f} };
+	Print(mat3_3f);
+    printf("\nIs Orthonormal: %s", mat3_3f.IsOrthonormal() ? "True" : "False");
+
+    Mat1x3f mat1_3f = mat3_3f.Row(0);
+    Print(mat1_3f);
+
 	Buffer<int, 5> bv;
     Buffer<std::string, 2> info;
     info[0] = "this is a test\n";
